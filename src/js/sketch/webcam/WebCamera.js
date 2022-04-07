@@ -1,13 +1,13 @@
-const THREE = require('three');
-const sleep = require('js-util/sleep');
+const THREE = require("three");
+import { sleep } from "@ykob/js-util";
 
 export default class WebCamera {
   constructor() {
-    this.video = document.createElement('video');
+    this.video = document.createElement("video");
     this.facingMode = undefined;
     this.resolution = {
       x: 0,
-      y: 0
+      y: 0,
     };
     this.mouth = [
       new THREE.Vector2(),
@@ -23,12 +23,13 @@ export default class WebCamera {
   async init() {
     if (!navigator.mediaDevices) return;
 
-    this.facingMode = `user`;  // environment or user
-    await navigator.mediaDevices.getUserMedia({
+    this.facingMode = `user`; // environment or user
+    await navigator.mediaDevices
+      .getUserMedia({
         audio: false,
         video: {
           facingMode: this.facingMode,
-        }
+        },
       })
       .then((stream) => {
         this.video.srcObject = stream;
@@ -63,7 +64,7 @@ export default class WebCamera {
       const d1 = this.mouth[0].distanceTo(this.mouth[1]);
       const d2 = this.mouth[1].distanceTo(this.mouth[2]);
       const d3 = this.mouth[2].distanceTo(this.mouth[3]);
-      open = Math.max((d2 / (d1 + d3)) - 1, 0);
+      open = Math.max(d2 / (d1 + d3) - 1, 0);
     }
 
     const hook = (1 - this.force.v) * 0.01;

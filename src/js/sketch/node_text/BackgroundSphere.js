@@ -1,12 +1,12 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class backgroundSphere {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -17,8 +17,8 @@ export default class backgroundSphere {
     // Materialを定義
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/backgroundSphere.vs').default,
-      fragmentShader: require('./glsl/backgroundSphere.fs').default,
+      vertexShader: require("./glsl/backgroundSphere.vs").default,
+      fragmentShader: require("./glsl/backgroundSphere.fs").default,
       side: THREE.BackSide,
     });
 

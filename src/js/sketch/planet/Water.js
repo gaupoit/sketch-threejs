@@ -1,16 +1,16 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Water {
   constructor(h) {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       addH: {
-        type: 'f',
-        value: h
+        type: "f",
+        value: h,
       },
     };
     this.obj;
@@ -22,8 +22,8 @@ export default class Water {
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/water.vs').default,
-      fragmentShader: require('./glsl/water.fs').default,
+      vertexShader: require("./glsl/water.vs").default,
+      fragmentShader: require("./glsl/water.fs").default,
       transparent: true,
     });
 

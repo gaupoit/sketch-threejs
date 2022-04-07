@@ -1,15 +1,15 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import Skull from './Skull';
-import AuraPostEffect from './AuraPostEffect';
-import Aura from './Aura';
-import Points from './Points';
+import Skull from "./Skull";
+import AuraPostEffect from "./AuraPostEffect";
+import Aura from "./Aura";
+import Points from "./Points";
 
 export default class AuraSkull extends THREE.Group {
   constructor() {
     super();
-    this.name = 'AuraSkull';
+    this.name = "AuraSkull";
     this.skull;
     this.auraPostEffect;
     this.aura;

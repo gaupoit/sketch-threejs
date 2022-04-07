@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
 export default class Confetti extends THREE.InstancedMesh {
   constructor() {
@@ -12,11 +12,23 @@ export default class Confetti extends THREE.InstancedMesh {
 
     // Define attributes of the instancing geometry
     const NUM = 600;
-    const ibaPositions = new THREE.InstancedBufferAttribute(new Float32Array(NUM * 3), 3);
-    const ibaColors = new THREE.InstancedBufferAttribute(new Float32Array(NUM * 3), 3);
-    const ibaRotates = new THREE.InstancedBufferAttribute(new Float32Array(NUM * 3), 3);
-    const ibaDelays = new THREE.InstancedBufferAttribute(new Float32Array(NUM), 1);
-    for ( var i = 0, ul = NUM; i < ul; i++ ) {
+    const ibaPositions = new THREE.InstancedBufferAttribute(
+      new Float32Array(NUM * 3),
+      3
+    );
+    const ibaColors = new THREE.InstancedBufferAttribute(
+      new Float32Array(NUM * 3),
+      3
+    );
+    const ibaRotates = new THREE.InstancedBufferAttribute(
+      new Float32Array(NUM * 3),
+      3
+    );
+    const ibaDelays = new THREE.InstancedBufferAttribute(
+      new Float32Array(NUM),
+      1
+    );
+    for (var i = 0, ul = NUM; i < ul; i++) {
       const radians = MathEx.radians(Math.random() * 360);
       const radius = Math.random() * 50 + 25;
       ibaPositions.setXYZ(
@@ -38,28 +50,28 @@ export default class Confetti extends THREE.InstancedMesh {
       );
       ibaDelays.setXYZ(i, Math.random());
     }
-    geometry.setAttribute('iPosition', ibaPositions);
-    geometry.setAttribute('iColor', ibaColors);
-    geometry.setAttribute('iRotate', ibaRotates);
-    geometry.setAttribute('iDelay', ibaDelays);
+    geometry.setAttribute("iPosition", ibaPositions);
+    geometry.setAttribute("iColor", ibaColors);
+    geometry.setAttribute("iRotate", ibaRotates);
+    geometry.setAttribute("iDelay", ibaDelays);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
-      vertexShader: require('./glsl/confetti.vs').default,
-      fragmentShader: require('./glsl/confetti.fs').default,
+      vertexShader: require("./glsl/confetti.vs").default,
+      fragmentShader: require("./glsl/confetti.fs").default,
       side: THREE.DoubleSide,
       transparent: true,
     });
 
     // Create Object3D
     super(geometry, material, NUM);
-    this.name = 'InstanceMesh';
+    this.name = "InstanceMesh";
     this.frustumCulled = false;
     this.isOver = false;
   }

@@ -1,16 +1,16 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Points {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       force: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -28,16 +28,19 @@ export default class Points {
       positions[i + 2] = 0;
       delays[i / 3] = Math.random() * 8;
     }
-    const baPositions = new THREE.BufferAttribute(new Float32Array(positions), 3);
+    const baPositions = new THREE.BufferAttribute(
+      new Float32Array(positions),
+      3
+    );
     const baDelays = new THREE.BufferAttribute(new Float32Array(delays), 1);
-    geometry.setAttribute('position', baPositions);
-    geometry.setAttribute('delay', baDelays);
+    geometry.setAttribute("position", baPositions);
+    geometry.setAttribute("delay", baDelays);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/points.vs').default,
-      fragmentShader: require('./glsl/points.fs').default,
+      vertexShader: require("./glsl/points.vs").default,
+      fragmentShader: require("./glsl/points.fs").default,
       transparent: true,
       depthWrite: false,
     });

@@ -1,23 +1,28 @@
-import * as THREE from 'three';
-import debounce from 'js-util/debounce';
+import * as THREE from "three";
+import { debounce } from "@ykob/js-util";
 
-import normalizeVector2 from '../../common/normalizeVector2';
-import Force2 from '../../old/Force2';
-import ForceCamera from '../../old/ForceCamera';
-import ForcePointLight from '../../old/ForcePointLight';
-import ForceHemisphereLight from '../../old/ForceHemisphereLight';
-import Mover from '../../old/Mover';
-import Points from '../../old/Points';
-import Util from '../../old/util';
+import normalizeVector2 from "../../common/normalizeVector2";
+import Force2 from "../../old/Force2";
+import ForceCamera from "../../old/ForceCamera";
+import ForcePointLight from "../../old/ForcePointLight";
+import ForceHemisphereLight from "../../old/ForceHemisphereLight";
+import Mover from "../../old/Mover";
+import Points from "../../old/Points";
+import Util from "../../old/util";
 
-export default function() {
-  const canvas = document.getElementById('canvas-webgl');
+export default function () {
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     antialias: true,
     canvas: canvas,
   });
   const scene = new THREE.Scene();
-  const camera = new ForceCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+  const camera = new ForceCamera(
+    35,
+    window.innerWidth / window.innerHeight,
+    1,
+    10000
+  );
 
   //
   // process for this sketch.
@@ -48,7 +53,7 @@ export default function() {
   var is_plus_activate = false;
   var track_points = true;
 
-  var updateMover = function() {
+  var updateMover = function () {
     for (var i = 0; i < movers.length; i++) {
       var mover = movers[i];
       if (mover.is_active) {
@@ -78,7 +83,7 @@ export default function() {
     points.updatePoints();
   };
 
-  var activateMover = function() {
+  var activateMover = function () {
     var count = 0;
     var now = Date.now();
     if (now - last_time_activate > 10) {
@@ -90,7 +95,12 @@ export default function() {
         var range = Util.getRandomInt(1, 30);
         var vector = Util.getPolarCoord(rad1, rad2, range);
         var force = Util.getPolarCoord(rad1, rad2, range / 20);
-        var h = Util.getRandomInt(comet_color_h - color_diff, comet_color_h + color_diff) - plus_acceleration / 1.5;
+        var h =
+          Util.getRandomInt(
+            comet_color_h - color_diff,
+            comet_color_h + color_diff
+          ) -
+          plus_acceleration / 1.5;
         var s = Util.getRandomInt(60, 80);
         vector.add(points.velocity);
         mover.activate();
@@ -106,26 +116,38 @@ export default function() {
     }
   };
 
-  var rotateComet = function() {
+  var rotateComet = function () {
     comet.rotation.x += 0.03 + plus_acceleration / 1000;
     comet.rotation.y += 0.01 + plus_acceleration / 1000;
     comet.rotation.z += 0.01 + plus_acceleration / 1000;
-    points.rad1_base += Util.getRadian(.6);
-    points.rad1 = Util.getRadian(Math.sin(points.rad1_base) * 45 + plus_acceleration / 100);
+    points.rad1_base += Util.getRadian(0.6);
+    points.rad1 = Util.getRadian(
+      Math.sin(points.rad1_base) * 45 + plus_acceleration / 100
+    );
     points.rad2 += Util.getRadian(0.8 + plus_acceleration / 100);
     points.rad3 += 0.01;
     return Util.getPolarCoord(points.rad1, points.rad2, 350);
   };
 
-  var rotateCometColor = function() {
+  var rotateCometColor = function () {
     var radius = comet_radius * 0.8;
-    comet_light1.position.copy(Util.getPolarCoord(Util.getRadian(0),  Util.getRadian(0), radius).add(points.velocity));
-    comet_light2.position.copy(Util.getPolarCoord(Util.getRadian(180), Util.getRadian(0), radius).add(points.velocity));
+    comet_light1.position.copy(
+      Util.getPolarCoord(Util.getRadian(0), Util.getRadian(0), radius).add(
+        points.velocity
+      )
+    );
+    comet_light2.position.copy(
+      Util.getPolarCoord(Util.getRadian(180), Util.getRadian(0), radius).add(
+        points.velocity
+      )
+    );
   };
 
-  var bounceComet = function() {
+  var bounceComet = function () {
     if (Date.now() - last_time_bounce > 1000 - plus_acceleration * 3) {
-      comet_scale.applyForce(new THREE.Vector2(0.08 + plus_acceleration / 5000, 0));
+      comet_scale.applyForce(
+        new THREE.Vector2(0.08 + plus_acceleration / 5000, 0)
+      );
       last_time_bounce = Date.now();
       is_plus_activate = true;
       last_time_plus_activate = Date.now();
@@ -138,20 +160,24 @@ export default function() {
     comet_scale.applyHook(0, 0.1);
     comet_scale.applyDrag(0.12);
     comet_scale.updateVelocity();
-    comet.scale.set(1 + comet_scale.velocity.x, 1 + comet_scale.velocity.x, 1 + comet_scale.velocity.x);
+    comet.scale.set(
+      1 + comet_scale.velocity.x,
+      1 + comet_scale.velocity.x,
+      1 + comet_scale.velocity.x
+    );
   };
 
-  var createTexture = function() {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
+  var createTexture = function () {
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
     var grad = null;
     var texture = null;
 
     canvas.width = 200;
     canvas.height = 200;
     grad = ctx.createRadialGradient(100, 100, 20, 100, 100, 100);
-    grad.addColorStop(0.9, 'rgba(255, 255, 255, 1)');
-    grad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');
+    grad.addColorStop(0.9, "rgba(255, 255, 255, 1)");
+    grad.addColorStop(1.0, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = grad;
     ctx.arc(100, 100, 100, 0, Math.PI / 180, true);
     ctx.fill();
@@ -162,28 +188,28 @@ export default function() {
     return texture;
   };
 
-  var createCommet = function() {
+  var createCommet = function () {
     var geometry = new THREE.OctahedronGeometry(comet_radius, 2);
     var material = new THREE.MeshPhongMaterial({
-      color: new THREE.Color('hsl(' + comet_color_h + ', 100%, 100%)'),
-      flatShading: true
+      color: new THREE.Color("hsl(" + comet_color_h + ", 100%, 100%)"),
+      flatShading: true,
     });
     return new THREE.Mesh(geometry, material);
   };
 
-  var createPlanet = function() {
+  var createPlanet = function () {
     var geometry = new THREE.OctahedronGeometry(250, 4);
     var material = new THREE.MeshPhongMaterial({
       color: 0x222222,
-      flatShading: true
+      flatShading: true,
     });
     return new THREE.Mesh(geometry, material);
   };
 
-  var accelerateComet = function() {
+  var accelerateComet = function () {
     if (is_touched && plus_acceleration < 200) {
       plus_acceleration += 1;
-    } else if(plus_acceleration > 0) {
+    } else if (plus_acceleration > 0) {
       plus_acceleration -= 1;
     }
   };
@@ -195,10 +221,13 @@ export default function() {
     scene.add(planet);
     for (var i = 0; i < movers_num; i++) {
       var mover = new Mover();
-      var h = Util.getRandomInt(comet_color_h - color_diff, comet_color_h + color_diff);
+      var h = Util.getRandomInt(
+        comet_color_h - color_diff,
+        comet_color_h + color_diff
+      );
       var s = Util.getRandomInt(60, 80);
       mover.init(new THREE.Vector3(Util.getRandomInt(-100, 100), 0, 0));
-      mover.color = new THREE.Color('hsl(' + h + ', ' + s + '%, 70%)');
+      mover.color = new THREE.Color("hsl(" + h + ", " + s + "%, 70%)");
       movers.push(mover);
       positions[i * 3 + 0] = mover.velocity.x;
       positions[i * 3 + 1] = mover.velocity.y;
@@ -211,31 +240,45 @@ export default function() {
     }
     points.init({
       scene: scene,
-      vs: require('../../old/glsl/points.vs').default,
-      fs: require('../../old/glsl/points.fs').default,
+      vs: require("../../old/glsl/points.vs").default,
+      fs: require("../../old/glsl/points.fs").default,
       positions: positions,
       colors: colors,
       opacities: opacities,
       sizes: sizes,
       texture: createTexture(),
-      blending: THREE.NormalBlending
+      blending: THREE.NormalBlending,
     });
     points.rad1 = 0;
     points.rad1_base = 0;
     points.rad2 = 0;
     points.rad3 = 0;
     hemi_light = new ForceHemisphereLight(
-      new THREE.Color('hsl(' + (comet_color_h - color_diff) + ', 50%, 60%)').getHex(),
-      new THREE.Color('hsl(' + (comet_color_h + color_diff) + ', 50%, 60%)').getHex(),
+      new THREE.Color(
+        "hsl(" + (comet_color_h - color_diff) + ", 50%, 60%)"
+      ).getHex(),
+      new THREE.Color(
+        "hsl(" + (comet_color_h + color_diff) + ", 50%, 60%)"
+      ).getHex(),
       1
     );
     scene.add(hemi_light);
-    comet_light1 = new ForcePointLight('hsl(' + (comet_color_h - color_diff) + ', 60%, 50%)', 1, 500, 1);
+    comet_light1 = new ForcePointLight(
+      "hsl(" + (comet_color_h - color_diff) + ", 60%, 50%)",
+      1,
+      500,
+      1
+    );
     scene.add(comet_light1);
-    comet_light2 = new ForcePointLight('hsl(' + (comet_color_h - color_diff) + ', 60%, 50%)', 1, 500, 1);
+    comet_light2 = new ForcePointLight(
+      "hsl(" + (comet_color_h - color_diff) + ", 60%, 50%)",
+      1,
+      500,
+      1
+    );
     scene.add(comet_light2);
     camera.anchor = new THREE.Vector3(1500, 0, 0);
-  }
+  };
 
   //
   // common process
@@ -246,27 +289,49 @@ export default function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-  }
+  };
   const render = () => {
     accelerateComet();
     points.velocity = rotateComet();
     if (track_points === true) {
       camera.force.position.anchor.copy(
-        points.velocity.clone().add(
-          points.velocity.clone().sub(points.obj.position).normalize().multiplyScalar(-400)
-        )
+        points.velocity
+          .clone()
+          .add(
+            points.velocity
+              .clone()
+              .sub(points.obj.position)
+              .normalize()
+              .multiplyScalar(-400)
+          )
       );
       camera.force.position.anchor.y += points.velocity.y * 2;
       camera.force.look.anchor.copy(points.velocity);
     }
     points.updatePoints();
     comet.position.copy(points.velocity);
-    hemi_light.color.setHSL((comet_color_h - color_diff - plus_acceleration / 1.5) / 360, 0.5, 0.6);
-    hemi_light.groundColor.setHSL((comet_color_h + color_diff - plus_acceleration / 1.5) / 360, 0.5, 0.6);
+    hemi_light.color.setHSL(
+      (comet_color_h - color_diff - plus_acceleration / 1.5) / 360,
+      0.5,
+      0.6
+    );
+    hemi_light.groundColor.setHSL(
+      (comet_color_h + color_diff - plus_acceleration / 1.5) / 360,
+      0.5,
+      0.6
+    );
     comet_light1.position.copy(points.velocity);
-    comet_light1.color.setHSL((comet_color_h - color_diff - plus_acceleration / 1.5) / 360, 0.5, 0.6);
+    comet_light1.color.setHSL(
+      (comet_color_h - color_diff - plus_acceleration / 1.5) / 360,
+      0.5,
+      0.6
+    );
     comet_light2.position.copy(points.velocity);
-    comet_light2.color.setHSL((comet_color_h + color_diff - plus_acceleration / 1.5) / 360, 0.5, 0.6);
+    comet_light2.color.setHSL(
+      (comet_color_h + color_diff - plus_acceleration / 1.5) / 360,
+      0.5,
+      0.6
+    );
     activateMover();
     updateMover();
     camera.force.position.applyHook(0, 0.025);
@@ -280,11 +345,11 @@ export default function() {
     rotateCometColor();
     bounceComet();
     renderer.render(scene, camera);
-  }
+  };
   const renderLoop = () => {
     render();
     requestAnimationFrame(renderLoop);
-  }
+  };
   const on = () => {
     const vectorTouchStart = new THREE.Vector2();
     const vectorTouchMove = new THREE.Vector2();
@@ -327,38 +392,46 @@ export default function() {
       }
     };
 
-    window.addEventListener('resize', debounce(() => {
-      resizeWindow();
-    }), 1000);
-    canvas.addEventListener('mousedown', function (event) {
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        resizeWindow();
+      }),
+      1000
+    );
+    canvas.addEventListener("mousedown", function (event) {
       event.preventDefault();
       touchStart(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mousemove', function (event) {
+    canvas.addEventListener("mousemove", function (event) {
       event.preventDefault();
       touchMove(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mouseup', function (event) {
+    canvas.addEventListener("mouseup", function (event) {
       event.preventDefault();
       touchEnd(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('touchstart', function (event) {
+    canvas.addEventListener("touchstart", function (event) {
       event.preventDefault();
       touchStart(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchmove', function (event) {
+    canvas.addEventListener("touchmove", function (event) {
       event.preventDefault();
       touchMove(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchend', function (event) {
+    canvas.addEventListener("touchend", function (event) {
       event.preventDefault();
-      touchEnd(event.changedTouches[0].clientX, event.changedTouches[0].clientY, true);
+      touchEnd(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY,
+        true
+      );
     });
-    window.addEventListener('mouseout', function () {
+    window.addEventListener("mouseout", function () {
       event.preventDefault();
       mouseOut();
     });
-  }
+  };
 
   const init = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -370,6 +443,6 @@ export default function() {
     initSketch();
     resizeWindow();
     renderLoop();
-  }
+  };
   init();
 }

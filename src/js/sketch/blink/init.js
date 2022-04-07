@@ -1,10 +1,10 @@
-const THREE = require('three');
-const debounce = require('js-util/debounce');
-const Points = require('./Points').default;
+const THREE = require("three");
+import { debounce } from "@ykob/js-util";
+const Points = require("./Points").default;
 
-export default function() {
+export default function () {
   const resolution = new THREE.Vector2();
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     antialias: false,
     canvas: canvas,
@@ -52,41 +52,45 @@ export default function() {
     isDrag = true;
   };
   const touchMove = (isTouched) => {
-    if (isDrag) {}
+    if (isDrag) {
+    }
   };
   const touchEnd = (isTouched) => {
     isDrag = false;
   };
   const on = () => {
-    window.addEventListener('resize', debounce(resizeWindow, 1000));
-    canvas.addEventListener('mousedown', (event) => {
+    window.addEventListener("resize", debounce(resizeWindow, 1000));
+    canvas.addEventListener("mousedown", (event) => {
       event.preventDefault();
       vectorTouchStart.set(event.clientX, event.clientY);
       touchStart(false);
     });
-    document.addEventListener('mousemove', (event) => {
+    document.addEventListener("mousemove", (event) => {
       event.preventDefault();
       vectorTouchMove.set(event.clientX, event.clientY);
       touchMove(false);
     });
-    document.addEventListener('mouseup', (event) => {
+    document.addEventListener("mouseup", (event) => {
       event.preventDefault();
       vectorTouchEnd.set(event.clientX, event.clientY);
       touchEnd(false);
     });
-    canvas.addEventListener('touchstart', (event) => {
+    canvas.addEventListener("touchstart", (event) => {
       event.preventDefault();
       vectorTouchStart.set(event.touches[0].clientX, event.touches[0].clientY);
       touchStart(true);
     });
-    canvas.addEventListener('touchmove', (event) => {
+    canvas.addEventListener("touchmove", (event) => {
       event.preventDefault();
       vectorTouchMove.set(event.touches[0].clientX, event.touches[0].clientY);
       touchMove(true);
     });
-    canvas.addEventListener('touchend', (event) => {
+    canvas.addEventListener("touchend", (event) => {
       event.preventDefault();
-      vectorTouchEnd.set(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+      vectorTouchEnd.set(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY
+      );
       touchEnd(true);
     });
   };
@@ -103,6 +107,6 @@ export default function() {
     camera.lookAt(new THREE.Vector3());
 
     renderLoop();
-  }
+  };
   init();
 }

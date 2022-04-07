@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/points.vs';
-import fs from './glsl/points.fs';
+import vs from "./glsl/points.vs";
+import fs from "./glsl/points.fs";
 
 export default class Points extends THREE.Points {
   constructor() {
@@ -21,18 +21,21 @@ export default class Points extends THREE.Points {
       const spherical = MathEx.spherical(radian1, radian2, radius);
       baPositions.setXYZ(i, spherical[0], spherical[1], spherical[2]);
       baDelay.setXYZ(i, Math.random());
-      baSpeed.setXYZ(i, MathEx.randomArbitrary(5, 10) * (MathEx.randomInt(0, 1) * 2.0 - 1.0));
+      baSpeed.setXYZ(
+        i,
+        MathEx.randomArbitrary(5, 10) * (MathEx.randomInt(0, 1) * 2.0 - 1.0)
+      );
     }
-    geometry.setAttribute('position', baPositions);
-    geometry.setAttribute('delay', baDelay);
-    geometry.setAttribute('speed', baSpeed);
+    geometry.setAttribute("position", baPositions);
+    geometry.setAttribute("delay", baDelay);
+    geometry.setAttribute("speed", baSpeed);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
       vertexShader: vs,
@@ -44,10 +47,9 @@ export default class Points extends THREE.Points {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Points';
+    this.name = "Points";
   }
-  start() {
-  }
+  start() {}
   update(time) {
     this.material.uniforms.time.value += time;
   }

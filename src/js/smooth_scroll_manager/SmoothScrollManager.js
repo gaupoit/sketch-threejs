@@ -1,11 +1,9 @@
-const debounce = require('js-util/debounce');
-const isiOS = require('js-util/isiOS');
-const isAndroid = require('js-util/isAndroid');
-const Hookes = require('./Hookes').default;
-const ScrollItems = require('./ScrollItems').default;
+import { debounce } from "@ykob/js-util";
+const Hookes = require("./Hookes").default;
+const ScrollItems = require("./ScrollItems").default;
 
-const contents = document.querySelector('.js-contents');
-const dummyScroll = document.querySelector('.js-dummy-scroll');
+const contents = document.querySelector(".js-contents");
+const dummyScroll = document.querySelector(".js-dummy-scroll");
 
 export default class SmoothScrollManager {
   constructor() {
@@ -15,11 +13,11 @@ export default class SmoothScrollManager {
     this.scrollTopPause = 0;
     this.resolution = {
       x: 0,
-      y: 0
+      y: 0,
     };
     this.bodyResolution = {
       x: 0,
-      y: 0
+      y: 0,
     };
     this.X_SWITCH_SMOOTH = 1024;
     this.hookes = {};
@@ -44,7 +42,7 @@ export default class SmoothScrollManager {
 
       // hash があった場合は指定の箇所にスクロール位置を調整する
       const { hash } = location;
-      const target = (hash) ? document.querySelector(hash) : null;
+      const target = hash ? document.querySelector(hash) : null;
       let anchorY = 0;
       if (target) {
         const targetRect = target.getBoundingClientRect();
@@ -67,15 +65,16 @@ export default class SmoothScrollManager {
   pause() {
     // スムーススクロールの一時停止
     this.isWorking = false;
-    contents.style.position = 'fixed';
+    contents.style.position = "fixed";
     // スマホ時には本文のtranslate値を更新してスクロールを固定する。
-    this.hookes.contents.velocity[1] = this.hookes.contents.anchor[1] = this.scrollTop * -1;
+    this.hookes.contents.velocity[1] = this.hookes.contents.anchor[1] =
+      this.scrollTop * -1;
     this.scrollTopPause = this.scrollTop;
     window.scrollTo(0, this.scrollTop);
   }
   play() {
     // スムーススクロールの再生
-    contents.style.position = '';
+    contents.style.position = "";
     this.scrollTop = this.scrollTopPause;
     // スマホ時には本文のtranslate値をゼロにしてスクロールを復帰させる。
     if (this.resolution.x <= this.X_SWITCH_SMOOTH) {
@@ -87,11 +86,11 @@ export default class SmoothScrollManager {
   initDummyScroll() {
     // ダミースクロールの初期化
     if (this.resolution.x <= this.X_SWITCH_SMOOTH) {
-      contents.style.transform = '';
-      contents.classList.remove('is-fixed');
+      contents.style.transform = "";
+      contents.classList.remove("is-fixed");
       dummyScroll.style.height = `0`;
     } else {
-      contents.classList.add('is-fixed');
+      contents.classList.add("is-fixed");
       dummyScroll.style.height = `${contents.clientHeight}px`;
     }
     this.render();
@@ -100,9 +99,9 @@ export default class SmoothScrollManager {
     // Hookesオブジェクトの初期化
     this.hookes = {
       contents: new Hookes({ k: 0.575, d: 0.8 }),
-      smooth:   new Hookes({ k: 0.18, d: 0.75 }),
+      smooth: new Hookes({ k: 0.18, d: 0.75 }),
       parallax: new Hookes({ k: 0.28, d: 0.7 }),
-    }
+    };
   }
   scrollBasis() {
     // 基礎的なスクロールイベントはここに記述する。
@@ -131,7 +130,8 @@ export default class SmoothScrollManager {
   tilt(event) {
     if (this.isWorking === false) return;
     if (this.resolution.x > this.X_SWITCH_SMOOTH) {
-      this.hookes.parallax.anchor[0] = (event.clientX / this.resolution.x * 2 - 1) * -100;
+      this.hookes.parallax.anchor[0] =
+        ((event.clientX / this.resolution.x) * 2 - 1) * -100;
     }
   }
   resizeBasis() {
@@ -154,14 +154,16 @@ export default class SmoothScrollManager {
     // window幅によってHookesオブジェクトの値を再設定する
     if (this.resolution.x > this.X_SWITCH_SMOOTH) {
       // PCの場合
-      this.hookes.contents.velocity[1] = this.hookes.contents.anchor[1] = -this.scrollTop;
-      this.hookes.parallax.velocity[1] = this.hookes.parallax.anchor[1] = this.scrollTop + this.resolution.y * 0.5;
+      this.hookes.contents.velocity[1] = this.hookes.contents.anchor[1] =
+        -this.scrollTop;
+      this.hookes.parallax.velocity[1] = this.hookes.parallax.anchor[1] =
+        this.scrollTop + this.resolution.y * 0.5;
     } else {
       // スマホの場合
       for (var key in this.hookes) {
         switch (key) {
-          case 'contents':
-          case 'parallax':
+          case "contents":
+          case "parallax":
             this.hookes[key].anchor[1] = this.hookes[key].velocity[1] = 0;
             break;
           default:
@@ -206,17 +208,29 @@ export default class SmoothScrollManager {
   on() {
     if (this.isAlreadyAddEvent) return;
 
-    const hookEventForResize = (isiOS() || isAndroid()) ? 'orientationchange' : 'resize';
+    const hookEventForResize = "resize";
 
-    window.addEventListener('scroll', (event) => {
-      this.scroll(event);
-    }, false);
-    window.addEventListener('mousemove', (event) => {
-      this.tilt(event);
-    }, false);
-    window.addEventListener(hookEventForResize, debounce((event) => {
-      this.resize();
-    }, 400), false);
+    window.addEventListener(
+      "scroll",
+      (event) => {
+        this.scroll(event);
+      },
+      false
+    );
+    window.addEventListener(
+      "mousemove",
+      (event) => {
+        this.tilt(event);
+      },
+      false
+    );
+    window.addEventListener(
+      hookEventForResize,
+      debounce((event) => {
+        this.resize();
+      }, 400),
+      false
+    );
 
     this.isAlreadyAddEvent = true;
   }

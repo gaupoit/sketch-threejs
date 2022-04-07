@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import { MathEx } from "@ykob/js-util";
 
 const objLoader = new OBJLoader();
 const texLoader = new THREE.TextureLoader();
@@ -9,26 +9,30 @@ export default class BuddhaHead {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       tex: {
-        type: 't',
-        value: null
+        type: "t",
+        value: null,
       },
     };
     this.obj;
   }
   async createObj() {
     // Load an obj file.
-    const obj = await objLoader.loadAsync('/sketch-threejs/model/buddha/buddha_head.obj');
-    this.uniforms.tex.value = await texLoader.loadAsync('/sketch-threejs/model/buddha/buddha_ao.jpg');
+    const obj = await objLoader.loadAsync(
+      "/sketch-threejs/model/buddha/buddha_head.obj"
+    );
+    this.uniforms.tex.value = await texLoader.loadAsync(
+      "/sketch-threejs/model/buddha/buddha_ao.jpg"
+    );
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/buddhaHead.vs').default,
-      fragmentShader: require('./glsl/buddhaHead.fs').default,
+      vertexShader: require("./glsl/buddhaHead.vs").default,
+      fragmentShader: require("./glsl/buddhaHead.fs").default,
     });
 
     // Create Object3D

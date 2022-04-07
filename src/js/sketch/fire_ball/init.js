@@ -1,21 +1,26 @@
-import * as THREE from 'three';
-import debounce from 'js-util/debounce';
+import * as THREE from "three";
+import { debounce } from "@ykob/js-util";
 
-import normalizeVector2 from '../../common/normalizeVector2';
-import ForceCamera from '../../old/ForceCamera';
-import ForcePointLight from '../../old/ForcePointLight';
-import Mover from '../../old/Mover';
-import Points from '../../old/Points';
-import Util from '../../old/util';
+import normalizeVector2 from "../../common/normalizeVector2";
+import ForceCamera from "../../old/ForceCamera";
+import ForcePointLight from "../../old/ForcePointLight";
+import Mover from "../../old/Mover";
+import Points from "../../old/Points";
+import Util from "../../old/util";
 
-export default function() {
-  const canvas = document.getElementById('canvas-webgl');
+export default function () {
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     antialias: true,
     canvas: canvas,
   });
   const scene = new THREE.Scene();
-  const camera = new ForceCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+  const camera = new ForceCamera(
+    35,
+    window.innerWidth / window.innerHeight,
+    1,
+    10000
+  );
   const clock = new THREE.Clock();
 
   //
@@ -35,7 +40,7 @@ export default function() {
   let last_time_activate = Date.now();
   let is_draged = false;
 
-  var updateMover =  function() {
+  var updateMover = function () {
     for (var i = 0; i < movers.length; i++) {
       var mover = movers[i];
       if (mover.is_active) {
@@ -62,16 +67,19 @@ export default function() {
     }
     points.updatePoints();
   };
-  var activateMover =  function() {
+  var activateMover = function () {
     var count = 0;
     var now = Date.now();
     if (now - last_time_activate > 10) {
       for (var i = 0; i < movers.length; i++) {
         var mover = movers[i];
         if (mover.is_active) continue;
-        var rad1 = Util.getRadian(Math.log(Util.getRandomInt(0, 256)) / Math.log(256) * 260);
+        var rad1 = Util.getRadian(
+          (Math.log(Util.getRandomInt(0, 256)) / Math.log(256)) * 260
+        );
         var rad2 = Util.getRadian(Util.getRandomInt(0, 360));
-        var range = (1- Math.log(Util.getRandomInt(32, 256)) / Math.log(256)) * 12;
+        var range =
+          (1 - Math.log(Util.getRandomInt(32, 256)) / Math.log(256)) * 12;
         var vector = new THREE.Vector3();
         var force = Util.getPolarCoord(rad1, rad2, range);
         vector.add(points.velocity);
@@ -79,37 +87,37 @@ export default function() {
         mover.init(vector);
         mover.applyForce(force);
         mover.a = 0.2;
-        mover.size = Math.pow(12 - range, 2) * Util.getRandomInt(1, 24) / 10;
+        mover.size = (Math.pow(12 - range, 2) * Util.getRandomInt(1, 24)) / 10;
         count++;
         if (count >= 6) break;
       }
       last_time_activate = Date.now();
     }
   };
-  var updatePoints =  function() {
+  var updatePoints = function () {
     points.updateVelocity();
     light.obj.position.copy(points.velocity);
   };
-  var movePoints = function(vector) {
-    var y = vector.y * window.innerHeight / 3;
-    var z = vector.x * window.innerWidth / -3;
+  var movePoints = function (vector) {
+    var y = (vector.y * window.innerHeight) / 3;
+    var z = (vector.x * window.innerWidth) / -3;
     points.anchor.y = y;
     points.anchor.z = z;
     light.force.anchor.y = y;
     light.force.anchor.z = z;
-  }
-  var createTexture =  function() {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
+  };
+  var createTexture = function () {
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
     var grad = null;
     var texture = null;
 
     canvas.width = 200;
     canvas.height = 200;
     grad = ctx.createRadialGradient(100, 100, 20, 100, 100, 100);
-    grad.addColorStop(0.2, 'rgba(255, 255, 255, 1)');
-    grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
-    grad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');
+    grad.addColorStop(0.2, "rgba(255, 255, 255, 1)");
+    grad.addColorStop(0.5, "rgba(255, 255, 255, 0.3)");
+    grad.addColorStop(1.0, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = grad;
     ctx.arc(100, 100, 100, 0, Math.PI / 180, true);
     ctx.fill();
@@ -119,12 +127,12 @@ export default function() {
     texture.needsUpdate = true;
     return texture;
   };
-  var createBackground =  function() {
+  var createBackground = function () {
     var geometry = new THREE.OctahedronGeometry(1500, 3);
     var material = new THREE.MeshPhongMaterial({
       color: 0xffffff,
       flatShading: true,
-      side: THREE.BackSide
+      side: THREE.BackSide,
     });
     return new THREE.Mesh(geometry, material);
   };
@@ -133,7 +141,7 @@ export default function() {
       var mover = new Mover();
       var h = Util.getRandomInt(0, 45);
       var s = Util.getRandomInt(60, 90);
-      var color = new THREE.Color('hsl(' + h + ', ' + s + '%, 50%)');
+      var color = new THREE.Color("hsl(" + h + ", " + s + "%, 50%)");
 
       mover.init(new THREE.Vector3(Util.getRandomInt(-100, 100), 0, 0));
       movers.push(mover);
@@ -146,21 +154,21 @@ export default function() {
     }
     points.init({
       scene: scene,
-      vs: require('../../old/glsl/points.vs').default,
-      fs: require('../../old/glsl/points.fs').default,
+      vs: require("../../old/glsl/points.vs").default,
+      fs: require("../../old/glsl/points.fs").default,
       positions: positions,
       colors: colors,
       opacities: opacities,
       sizes: sizes,
       texture: createTexture(),
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
     });
     scene.add(light);
     bg = createBackground();
     scene.add(bg);
     camera.setPolarCoord(Util.getRadian(25), 0, 1000);
     light.setPolarCoord(Util.getRadian(25), 0, 200);
-  }
+  };
 
   //
   // common process
@@ -171,7 +179,7 @@ export default function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-  }
+  };
   const render = () => {
     points.applyHook(0, 0.08);
     points.applyDrag(0.2);
@@ -188,11 +196,11 @@ export default function() {
     camera.updatePosition();
     camera.lookAtCenter();
     renderer.render(scene, camera);
-  }
+  };
   const renderLoop = () => {
     render();
     requestAnimationFrame(renderLoop);
-  }
+  };
   const on = () => {
     const vectorTouchStart = new THREE.Vector2();
     const vectorTouchMove = new THREE.Vector2();
@@ -224,38 +232,46 @@ export default function() {
       light.force.anchor.set(0, 0, 0);
     };
 
-    window.addEventListener('resize', debounce(() => {
-      resizeWindow();
-    }), 1000);
-    canvas.addEventListener('mousedown', function (event) {
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        resizeWindow();
+      }),
+      1000
+    );
+    canvas.addEventListener("mousedown", function (event) {
       event.preventDefault();
       touchStart(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mousemove', function (event) {
+    canvas.addEventListener("mousemove", function (event) {
       event.preventDefault();
       touchMove(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mouseup', function (event) {
+    canvas.addEventListener("mouseup", function (event) {
       event.preventDefault();
       touchEnd(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('touchstart', function (event) {
+    canvas.addEventListener("touchstart", function (event) {
       event.preventDefault();
       touchStart(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchmove', function (event) {
+    canvas.addEventListener("touchmove", function (event) {
       event.preventDefault();
       touchMove(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchend', function (event) {
+    canvas.addEventListener("touchend", function (event) {
       event.preventDefault();
-      touchEnd(event.changedTouches[0].clientX, event.changedTouches[0].clientY, true);
+      touchEnd(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY,
+        true
+      );
     });
-    window.addEventListener('mouseout', function () {
+    window.addEventListener("mouseout", function () {
       event.preventDefault();
       mouseOut();
     });
-  }
+  };
 
   const init = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -267,6 +283,6 @@ export default function() {
     initSketch();
     resizeWindow();
     renderLoop();
-  }
+  };
   init();
 }

@@ -1,6 +1,6 @@
-const THREE = require('three');
-const glMatrix = require('gl-matrix');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+const glMatrix = require("gl-matrix");
+import { MathEx } from "@ykob/js-util";
 
 export default class CameraController {
   constructor(camera, focalLength) {
@@ -14,11 +14,7 @@ export default class CameraController {
     }
   }
   tilt(mousemove) {
-    this.anchorTilt = [
-      mousemove.x * -200,
-      mousemove.y * 200,
-      0
-    ];
+    this.anchorTilt = [mousemove.x * -200, mousemove.y * 200, 0];
   }
   move(position, lookAt, focalLength) {
     for (var i = 0; i < position.length; i++) {
@@ -33,7 +29,11 @@ export default class CameraController {
   }
   render(time, mousemove) {
     this.tilt(mousemove);
-    glMatrix.vec3.add(this.camera.velocity, this.camera.velocity, this.anchorTilt);
+    glMatrix.vec3.add(
+      this.camera.velocity,
+      this.camera.velocity,
+      this.anchorTilt
+    );
     this.camera.render();
   }
 }

@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
 const texLoader = new THREE.TextureLoader();
 const DURATION = 4;
@@ -18,26 +18,27 @@ export default class Typo {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       texHannyaShingyo: {
-        type: 't',
-        value: undefined
+        type: "t",
+        value: undefined,
       },
       unitUv: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       duration: {
-        type: 'f',
-        value: DURATION
+        type: "f",
+        value: DURATION,
       },
     };
     this.obj;
   }
   async createObj() {
-    const text = '観自在菩薩行深般若波羅蜜多時照見五蘊皆空度一切苦厄舎利子色不異空空不異色色即是空空即是色受想行識亦復如是舎利子是諸法空相不生不滅不垢不浄不増不減是故空中無色無受想行識無眼耳鼻舌身意無色声香味触法無眼界乃至無意識界無無明亦無無明尽乃至無老死亦無老死尽無苦集滅道無智亦無得以無所得故菩提薩埵依般若波羅蜜多故心無罣礙無罣礙故無有恐怖遠離一切顛倒夢想究竟涅槃三世諸仏依般若波羅蜜多故得阿耨多羅三藐三菩提故知般若波羅蜜多是大神呪是大明呪是無上呪是無等等呪能除一切苦真実不虚故説般若波羅蜜多呪即説呪日羯諦羯諦波羅羯諦波羅僧羯諦菩提薩婆訶般若心経';
+    const text =
+      "観自在菩薩行深般若波羅蜜多時照見五蘊皆空度一切苦厄舎利子色不異空空不異色色即是空空即是色受想行識亦復如是舎利子是諸法空相不生不滅不垢不浄不増不減是故空中無色無受想行識無眼耳鼻舌身意無色声香味触法無眼界乃至無意識界無無明亦無無明尽乃至無老死亦無老死尽無苦集滅道無智亦無得以無所得故菩提薩埵依般若波羅蜜多故心無罣礙無罣礙故無有恐怖遠離一切顛倒夢想究竟涅槃三世諸仏依般若波羅蜜多故得阿耨多羅三藐三菩提故知般若波羅蜜多是大神呪是大明呪是無上呪是無等等呪能除一切苦真実不虚故説般若波羅蜜多呪即説呪日羯諦羯諦波羅羯諦波羅僧羯諦菩提薩婆訶般若心経";
     const widthPerSide = 2048;
     const gridsPerSide = Math.ceil(Math.sqrt(text.length));
     const fontSize = widthPerSide / gridsPerSide;
@@ -50,7 +51,10 @@ export default class Typo {
     geometry.copy(baseGeometry);
 
     num = text.length;
-    iPositions = new THREE.InstancedBufferAttribute(new Float32Array(num * 3), 3);
+    iPositions = new THREE.InstancedBufferAttribute(
+      new Float32Array(num * 3),
+      3
+    );
     iUvs = new THREE.InstancedBufferAttribute(new Float32Array(num * 2), 2);
     iIds = new THREE.InstancedBufferAttribute(new Float32Array(num), 1);
     iTimes = new THREE.InstancedBufferAttribute(new Float32Array(num), 1);
@@ -71,28 +75,34 @@ export default class Typo {
     }
 
     // Define attributes of the instancing geometry
-    geometry.setAttribute('iPosition',  iPositions);
-    geometry.setAttribute('iUv',  iUvs);
-    geometry.setAttribute('iId',  iIds);
-    geometry.setAttribute('iTime',  iTimes);
-    geometry.setAttribute('iIsAnimated',  iIsAnimated);
-    geometry.setAttribute('iScale',  iScales);
-    geometry.setAttribute('iMove',  iMoves);
+    geometry.setAttribute("iPosition", iPositions);
+    geometry.setAttribute("iUv", iUvs);
+    geometry.setAttribute("iId", iIds);
+    geometry.setAttribute("iTime", iTimes);
+    geometry.setAttribute("iIsAnimated", iIsAnimated);
+    geometry.setAttribute("iScale", iScales);
+    geometry.setAttribute("iMove", iMoves);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/typo.vs').default,
-      fragmentShader: require('./glsl/typo.fs').default,
+      vertexShader: require("./glsl/typo.vs").default,
+      fragmentShader: require("./glsl/typo.fs").default,
       transparent: true,
       depthWrite: false,
     });
 
-    this.uniforms.texHannyaShingyo.value = await texLoader.loadAsync('/sketch-threejs/img/sketch/buddha/hannya_text.png');
+    this.uniforms.texHannyaShingyo.value = await texLoader.loadAsync(
+      "/sketch-threejs/img/sketch/buddha/hannya_text.png"
+    );
     this.uniforms.unitUv.value = 1 / gridsPerSide;
 
     // Create Object3D
-    this.obj = new THREE.InstancedMesh(geometry, material, gridsPerSide * gridsPerSide);
+    this.obj = new THREE.InstancedMesh(
+      geometry,
+      material,
+      gridsPerSide * gridsPerSide
+    );
     this.obj.position.y = 0.0;
     this.obj.frustumCulled = false;
   }
@@ -117,12 +127,12 @@ export default class Typo {
       iScales.needsUpdate = true;
       iMoves.needsUpdate = true;
       interval = 0;
-      animateId = (animateId >= num - 1) ? 0 : animateId + 1;
+      animateId = animateId >= num - 1 ? 0 : animateId + 1;
     }
 
     for (var i = 0; i < num; i++) {
       if (iIsAnimated.getX(i) === 0) continue;
-      const past =  iTimes.getX(i);
+      const past = iTimes.getX(i);
       if (past > DURATION) {
         iIsAnimated.setX(i, 0);
         iTimes.setX(i, 0);

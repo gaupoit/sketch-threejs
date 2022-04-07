@@ -1,14 +1,14 @@
-const THREE = require('three');
-const debounce = require('js-util/debounce');
-const NodeText = require('./NodeText').default;
-const BackgroundSphere = require('./BackgroundSphere').default;
+const THREE = require("three");
+import { debounce } from "@ykob/js-util";
+const NodeText = require("./NodeText").default;
+const BackgroundSphere = require("./BackgroundSphere").default;
 
-export default function() {
+export default function () {
   // ==========
   // Define common variables
   //
   const resolution = new THREE.Vector2();
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     alpha: true,
     antialias: true,
@@ -52,8 +52,8 @@ export default function() {
     renderer.setSize(resolution.x, resolution.y);
   };
   const on = () => {
-    window.addEventListener('resize', debounce(resizeWindow, 1000));
-    window.addEventListener('click', () => {
+    window.addEventListener("resize", debounce(resizeWindow, 1000));
+    window.addEventListener("click", () => {
       nodeText.transform();
     });
   };
@@ -62,24 +62,27 @@ export default function() {
   // Initialize
   //
   const init = () => {
-    loader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', (font) => {
-      nodeText.createObj(font);
-      bg.createObj();
+    loader.load(
+      "https://threejs.org/examples/fonts/helvetiker_bold.typeface.json",
+      (font) => {
+        nodeText.createObj(font);
+        bg.createObj();
 
-      //scene.add(nodeText.obj);
-      scene.add(nodeText.objWire);
-      scene.add(nodeText.objPoints);
-      scene.add(bg.obj);
+        //scene.add(nodeText.obj);
+        scene.add(nodeText.objWire);
+        scene.add(nodeText.objPoints);
+        scene.add(bg.obj);
 
-      renderer.setClearColor(0x111111, 1.0);
-      camera.position.set(0, 0, 1000);
-      camera.lookAt(new THREE.Vector3());
-      clock.start();
+        renderer.setClearColor(0x111111, 1.0);
+        camera.position.set(0, 0, 1000);
+        camera.lookAt(new THREE.Vector3());
+        clock.start();
 
-      on();
-      resizeWindow();
-      renderLoop();
-    });
-  }
+        on();
+        resizeWindow();
+        renderLoop();
+      }
+    );
+  };
   init();
 }

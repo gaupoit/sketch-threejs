@@ -1,16 +1,16 @@
-import * as THREE from 'three';
-import debounce from 'js-util/debounce';
-import sleep from 'js-util/sleep';
+import * as THREE from "three";
+import { debounce } from "@ykob/js-util";
+import { sleep } from "@ykob/js-util";
 
-import DnaHelix from './DnaHelix';
-import PostEffect from './PostEffect';
+import DnaHelix from "./DnaHelix";
+import PostEffect from "./PostEffect";
 
-export default async function() {
+export default async function () {
   // ==========
   // Define common variables
   //
   const resolution = new THREE.Vector2();
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     alpha: true,
     antialias: true,
@@ -19,7 +19,7 @@ export default async function() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera();
   const clock = new THREE.Clock({
-    autoStart: false
+    autoStart: false,
   });
 
   // For the post effect.
@@ -28,7 +28,7 @@ export default async function() {
   const cameraPE = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 2);
 
   // For the preloader.
-  const preloader = document.querySelector('.p-preloader');
+  const preloader = document.querySelector(".p-preloader");
 
   // ==========
   // Define unique variables
@@ -83,15 +83,15 @@ export default async function() {
     postEffect.resize(resolution.x, resolution.y);
   };
   const on = () => {
-    window.addEventListener('blur', () => {
+    window.addEventListener("blur", () => {
       // this window is inactive.
       clock.stop();
     });
-    window.addEventListener('focus', () => {
+    window.addEventListener("focus", () => {
       // this window is inactive.
       clock.start();
     });
-    window.addEventListener('resize', debounce(resizeWindow, 1000));
+    window.addEventListener("resize", debounce(resizeWindow, 1000));
   };
 
   // ==========
@@ -109,7 +109,7 @@ export default async function() {
   on();
   resizeWindow();
 
-  preloader.classList.add('is-hidden');
+  preloader.classList.add("is-hidden");
   await sleep(200);
 
   clock.start();

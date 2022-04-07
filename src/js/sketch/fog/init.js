@@ -1,15 +1,15 @@
-const THREE = require('three');
-const debounce = require('js-util/debounce');
+const THREE = require("three");
+import { debounce } from "@ykob/js-util";
 
-const loadTexs = require('../../common/loadTexs').default;
-const Fog = require('./Fog').default;
+const loadTexs = require("../../common/loadTexs").default;
+const Fog = require("./Fog").default;
 
-export default function() {
+export default function () {
   // ==========
   // Define common variables
   //
   const resolution = new THREE.Vector2();
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     alpha: true,
     antialias: true,
@@ -26,7 +26,7 @@ export default function() {
   // Define unique variables
   //
   const texsSrc = {
-    fog: '../img/sketch/fog/fog.png'
+    fog: "../img/sketch/fog/fog.png",
   };
   const fog = new Fog();
 
@@ -54,7 +54,7 @@ export default function() {
     renderer.setSize(resolution.x, resolution.y);
   };
   const on = () => {
-    window.addEventListener('resize', debounce(resizeWindow, 1000));
+    window.addEventListener("resize", debounce(resizeWindow, 1000));
   };
 
   // ==========
@@ -75,6 +75,6 @@ export default function() {
       resizeWindow();
       renderLoop();
     });
-  }
+  };
   init();
 }

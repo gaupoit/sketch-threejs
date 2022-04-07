@@ -1,28 +1,28 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Plane {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       texVideo: {
-        type: 't',
-        value: null
+        type: "t",
+        value: null,
       },
       facing: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       resolution: {
-        type: 'v2',
-        value: new THREE.Vector2()
+        type: "v2",
+        value: new THREE.Vector2(),
       },
       force: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -34,8 +34,8 @@ export default class Plane {
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/plane.vs').default,
-      fragmentShader: require('./glsl/plane.fs').default,
+      vertexShader: require("./glsl/plane.vs").default,
+      fragmentShader: require("./glsl/plane.fs").default,
       transparent: true,
     });
 
@@ -45,7 +45,7 @@ export default class Plane {
     videoTex.format = THREE.RGBFormat;
 
     this.uniforms.texVideo.value = videoTex;
-    this.uniforms.facing.value = (webcam.facingMode === 'user') ? 1 : 0;
+    this.uniforms.facing.value = webcam.facingMode === "user" ? 1 : 0;
     this.uniforms.resolution.value.set(
       webcam.resolution.x,
       webcam.resolution.y

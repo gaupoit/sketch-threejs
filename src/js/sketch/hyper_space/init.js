@@ -1,20 +1,25 @@
-const THREE = require('three');
-const debounce = require('js-util/debounce');
+const THREE = require("three");
+import { debounce } from "@ykob/js-util";
 
-import normalizeVector2 from '../../common/normalizeVector2';
-import ForceCamera from '../../old/ForceCamera';
-import Mover from '../../old/Mover';
-import Points from '../../old/Points';
-import Util from '../../old/util';
+import normalizeVector2 from "../../common/normalizeVector2";
+import ForceCamera from "../../old/ForceCamera";
+import Mover from "../../old/Mover";
+import Points from "../../old/Points";
+import Util from "../../old/util";
 
-export default function() {
-  const canvas = document.getElementById('canvas-webgl');
+export default function () {
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     antialias: true,
     canvas: canvas,
   });
   const scene = new THREE.Scene();
-  const camera = new ForceCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+  const camera = new ForceCamera(
+    35,
+    window.innerWidth / window.innerHeight,
+    1,
+    10000
+  );
   const clock = new THREE.Clock();
 
   //
@@ -31,7 +36,7 @@ export default function() {
   var last_time_activate = Date.now();
   var is_touched = false;
 
-  var updateMover = function() {
+  var updateMover = function () {
     for (var i = 0; i < movers.length; i++) {
       var mover = movers[i];
       if (mover.is_active) {
@@ -58,7 +63,7 @@ export default function() {
     points.updatePoints();
   };
 
-  var activateMover = function() {
+  var activateMover = function () {
     var count = 0;
     var now = Date.now();
     if (now - last_time_activate > gravity.x * 16) {
@@ -66,7 +71,8 @@ export default function() {
         var mover = movers[i];
         if (mover.is_active) continue;
         var rad = Util.getRadian(Util.getRandomInt(0, 120) * 3);
-        var range = Math.log(Util.getRandomInt(2, 128)) / Math.log(128) * 160 + 60;
+        var range =
+          (Math.log(Util.getRandomInt(2, 128)) / Math.log(128)) * 160 + 60;
         var y = Math.sin(rad) * range;
         var z = Math.cos(rad) * range;
         var vector = new THREE.Vector3(-1000, y, z);
@@ -82,22 +88,22 @@ export default function() {
     }
   };
 
-  var updatePoints = function() {
+  var updatePoints = function () {
     points.updateVelocity();
   };
 
-  var createTexture = function() {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
+  var createTexture = function () {
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
     var grad = null;
     var texture = null;
 
     canvas.width = 256;
     canvas.height = 256;
     grad = ctx.createRadialGradient(128, 128, 20, 128, 128, 128);
-    grad.addColorStop(0.2, 'rgba(255, 255, 255, 1)');
-    grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
-    grad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');
+    grad.addColorStop(0.2, "rgba(255, 255, 255, 1)");
+    grad.addColorStop(0.5, "rgba(255, 255, 255, 0.3)");
+    grad.addColorStop(1.0, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = grad;
     ctx.arc(128, 128, 128, 0, Math.PI / 180, true);
     ctx.fill();
@@ -107,7 +113,7 @@ export default function() {
     return texture;
   };
 
-  var changeGravity = function() {
+  var changeGravity = function () {
     if (is_touched) {
       if (gravity.x < 6) gravity.x += 0.02;
     } else {
@@ -115,12 +121,12 @@ export default function() {
     }
   };
 
-  var initSketch = function() {
+  var initSketch = function () {
     for (var i = 0; i < movers_num; i++) {
       var mover = new Mover();
       var h = Util.getRandomInt(60, 210);
       var s = Util.getRandomInt(30, 90);
-      var color = new THREE.Color('hsl(' + h + ', ' + s + '%, 50%)');
+      var color = new THREE.Color("hsl(" + h + ", " + s + "%, 50%)");
 
       mover.init(new THREE.Vector3(Util.getRandomInt(-100, 100), 0, 0));
       movers.push(mover);
@@ -133,17 +139,17 @@ export default function() {
     }
     points.init({
       scene: scene,
-      vs: require('../../old/glsl/points.vs').default,
-      fs: require('../../old/glsl/points.fs').default,
+      vs: require("../../old/glsl/points.vs").default,
+      fs: require("../../old/glsl/points.fs").default,
       positions: positions,
       colors: colors,
       opacities: opacities,
       sizes: sizes,
       texture: createTexture(),
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
     });
     camera.force.position.anchor.set(800, 0, 0);
-  }
+  };
 
   //
   // common process
@@ -154,11 +160,11 @@ export default function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-  }
+  };
   const initStats = () => {
     stats.showPanel(0);
     document.body.appendChild(stats.dom);
-  }
+  };
   const render = () => {
     changeGravity();
     activateMover();
@@ -169,11 +175,11 @@ export default function() {
     camera.updatePosition();
     camera.lookAtCenter();
     renderer.render(scene, camera);
-  }
+  };
   const renderLoop = () => {
     render();
     requestAnimationFrame(renderLoop);
-  }
+  };
   const on = () => {
     const vectorTouchStart = new THREE.Vector2();
     const vectorTouchMove = new THREE.Vector2();
@@ -202,38 +208,46 @@ export default function() {
       camera.force.position.anchor.y = 0;
     };
 
-    window.addEventListener('resize', debounce(() => {
-      resizeWindow();
-    }), 1000);
-    canvas.addEventListener('mousedown', function (event) {
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        resizeWindow();
+      }),
+      1000
+    );
+    canvas.addEventListener("mousedown", function (event) {
       event.preventDefault();
       touchStart(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mousemove', function (event) {
+    canvas.addEventListener("mousemove", function (event) {
       event.preventDefault();
       touchMove(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mouseup', function (event) {
+    canvas.addEventListener("mouseup", function (event) {
       event.preventDefault();
       touchEnd(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('touchstart', function (event) {
+    canvas.addEventListener("touchstart", function (event) {
       event.preventDefault();
       touchStart(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchmove', function (event) {
+    canvas.addEventListener("touchmove", function (event) {
       event.preventDefault();
       touchMove(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchend', function (event) {
+    canvas.addEventListener("touchend", function (event) {
       event.preventDefault();
-      touchEnd(event.changedTouches[0].clientX, event.changedTouches[0].clientY, true);
+      touchEnd(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY,
+        true
+      );
     });
-    window.addEventListener('mouseout', function () {
+    window.addEventListener("mouseout", function () {
       event.preventDefault();
       mouseOut();
     });
-  }
+  };
 
   const init = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -245,6 +259,6 @@ export default function() {
     initSketch();
     resizeWindow();
     renderLoop();
-  }
+  };
   init();
 }

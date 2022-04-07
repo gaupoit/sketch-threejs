@@ -1,13 +1,13 @@
-const THREE = require('three');
+const THREE = require("three");
 
-const MathEx = require('js-util/MathEx');
+import { MathEx } from "@ykob/js-util";
 
 export default class Ground {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj = this.createObj();
@@ -19,12 +19,12 @@ export default class Ground {
       new THREE.PlaneGeometry(1024, 1024, 32, 32),
       new THREE.RawShaderMaterial({
         uniforms: this.uniforms,
-        vertexShader: require('./glsl/ground.vs').default,
-        fragmentShader: require('./glsl/ground.fs').default,
+        vertexShader: require("./glsl/ground.vs").default,
+        fragmentShader: require("./glsl/ground.fs").default,
         transparent: true,
-        wireframe: true
+        wireframe: true,
       })
-    )
+    );
   }
   render(time) {
     this.uniforms.time.value += time;

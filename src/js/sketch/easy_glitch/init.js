@@ -1,17 +1,17 @@
-import * as THREE from 'three';
-import debounce from 'js-util/debounce';
-import sleep from 'js-util/sleep';
+import * as THREE from "three";
+import { debounce } from "@ykob/js-util";
+import { sleep } from "@ykob/js-util";
 
-import Typo from './Typo';
-import Debris from './Debris';
-import Background from './Background';
+import Typo from "./Typo";
+import Debris from "./Debris";
+import Background from "./Background";
 
-export default async function() {
+export default async function () {
   // ==========
   // Define common variables
   //
   const resolution = new THREE.Vector2();
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     alpha: true,
     antialias: true,
@@ -21,12 +21,12 @@ export default async function() {
   const camera = new THREE.PerspectiveCamera();
   const cameraResolution = new THREE.Vector2();
   const clock = new THREE.Clock({
-    autoStart: false
+    autoStart: false,
   });
   const texLoader = new THREE.TextureLoader();
 
   // For the preloader.
-  const preloader = document.querySelector('.p-preloader');
+  const preloader = document.querySelector(".p-preloader");
 
   // ==========
   // Define unique variables
@@ -54,13 +54,13 @@ export default async function() {
   const resizeCamera = () => {
     if (resolution.x > resolution.y) {
       cameraResolution.set(
-        (resolution.x >= 1200) ? 1200 : resolution.x,
-        (resolution.x >= 1200) ? 800 : resolution.x * 0.66,
+        resolution.x >= 1200 ? 1200 : resolution.x,
+        resolution.x >= 1200 ? 800 : resolution.x * 0.66
       );
     } else {
       cameraResolution.set(
-        ((resolution.y >= 1200) ? 800 : resolution.y * 0.66) * 0.6,
-        ((resolution.y >= 1200) ? 1200 : resolution.y) * 0.6,
+        (resolution.y >= 1200 ? 800 : resolution.y * 0.66) * 0.6,
+        (resolution.y >= 1200 ? 1200 : resolution.y) * 0.6
       );
     }
     camera.setViewOffset(
@@ -81,15 +81,15 @@ export default async function() {
     renderer.setSize(resolution.x, resolution.y);
   };
   const on = () => {
-    window.addEventListener('blur', () => {
+    window.addEventListener("blur", () => {
       // this window is inactive.
       clock.stop();
     });
-    window.addEventListener('focus', () => {
+    window.addEventListener("focus", () => {
       // this window is inactive.
       clock.start();
     });
-    window.addEventListener('resize', debounce(resizeWindow, 100));
+    window.addEventListener("resize", debounce(resizeWindow, 100));
   };
 
   // ==========
@@ -104,9 +104,9 @@ export default async function() {
   camera.lookAt(new THREE.Vector3());
 
   await Promise.all([
-    texLoader.loadAsync('../img/sketch/easy_glitch/typo.png'),
-    texLoader.loadAsync('../img/sketch/easy_glitch/noise.png'),
-  ]).then(response => {
+    texLoader.loadAsync("../img/sketch/easy_glitch/typo.png"),
+    texLoader.loadAsync("../img/sketch/easy_glitch/noise.png"),
+  ]).then((response) => {
     textures = response;
   });
 
@@ -132,7 +132,7 @@ export default async function() {
   on();
   resizeWindow();
 
-  preloader.classList.add('is-hidden');
+  preloader.classList.add("is-hidden");
   await sleep(200);
 
   clock.start();

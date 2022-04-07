@@ -1,19 +1,24 @@
-import * as THREE from 'three';
-import debounce from 'js-util/debounce';
+import * as THREE from "three";
+import { debounce } from "@ykob/js-util";
 
-import normalizeVector2 from '../../common/normalizeVector2';
-import Force2 from '../../old/Force2';
-import ForceCamera from '../../old/ForceCamera';
-import Util from '../../old/util';
+import normalizeVector2 from "../../common/normalizeVector2";
+import Force2 from "../../old/Force2";
+import ForceCamera from "../../old/ForceCamera";
+import Util from "../../old/util";
 
-export default function() {
-  const canvas = document.getElementById('canvas-webgl');
+export default function () {
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     antialias: true,
     canvas: canvas,
   });
   const scene = new THREE.Scene();
-  const camera = new ForceCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+  const camera = new ForceCamera(
+    35,
+    window.innerWidth / window.innerHeight,
+    1,
+    10000
+  );
   const clock = new THREE.Clock();
 
   //
@@ -39,11 +44,11 @@ export default function() {
 
   var force = new Force2();
 
-  var createPointsForCrossFade = function() {
+  var createPointsForCrossFade = function () {
     var geometry = new THREE.BufferGeometry();
     var vertices_base = [];
     var radians_base = [];
-    for (let i = 0; i < 32; i ++) {
+    for (let i = 0; i < 32; i++) {
       var x = 0;
       var y = 0;
       var z = 0;
@@ -54,38 +59,38 @@ export default function() {
       radians_base.push(r1, r2, r3);
     }
     var vertices = new Float32Array(vertices_base);
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
     var radians = new Float32Array(radians_base);
-    geometry.setAttribute('radian', new THREE.BufferAttribute(radians, 3));
+    geometry.setAttribute("radian", new THREE.BufferAttribute(radians, 3));
     var material = new THREE.ShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0.0
+          type: "f",
+          value: 0.0,
         },
         resolution: {
-          type: 'v2',
-          value: new THREE.Vector2(window.innerWidth, window.innerHeight)
+          type: "v2",
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         size: {
-          type: 'f',
-          value: 28.0
+          type: "f",
+          value: 28.0,
         },
         force: {
-          type: 'v2',
+          type: "v2",
           value: force.velocity,
         },
       },
-      vertexShader: require('./glsl/points.vs').default,
-      fragmentShader: require('./glsl/points.fs').default,
+      vertexShader: require("./glsl/points.vs").default,
+      fragmentShader: require("./glsl/points.fs").default,
       transparent: true,
       depthWrite: false,
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
     });
     return new THREE.Points(geometry, material);
   };
 
-  var createObject = function() {
+  var createObject = function () {
     var geometry_base = new THREE.SphereGeometry(2, 4, 4);
     var attr = geometry_base.attributes;
     var geometry = new THREE.BufferGeometry();
@@ -94,7 +99,7 @@ export default function() {
     var radians_base = [];
     var scales_base = [];
     var indices_base = [];
-    for (let i = 0; i < 16; i ++) {
+    for (let i = 0; i < 16; i++) {
       var radius = Util.getRandomInt(300, 1000);
       var radian = Util.getRadian(Util.getRandomInt(0, 3600) / 10);
       var scale = Util.getRandomInt(60, 120) / 100;
@@ -109,62 +114,62 @@ export default function() {
         scales_base.push(scale);
       }
       geometry_base.index.array.map((item) => {
-        indices_base.push(item + i * attr.position.array.length / 3)
+        indices_base.push(item + (i * attr.position.array.length) / 3);
       });
     }
     var vertices = new Float32Array(vertices_base);
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
     var radius = new Float32Array(radiuses_base);
-    geometry.setAttribute('radius', new THREE.BufferAttribute(radius, 1));
+    geometry.setAttribute("radius", new THREE.BufferAttribute(radius, 1));
     var radians = new Float32Array(radians_base);
-    geometry.setAttribute('radian', new THREE.BufferAttribute(radians, 1));
+    geometry.setAttribute("radian", new THREE.BufferAttribute(radians, 1));
     var scales = new Float32Array(scales_base);
-    geometry.setAttribute('scale', new THREE.BufferAttribute(scales, 1));
+    geometry.setAttribute("scale", new THREE.BufferAttribute(scales, 1));
     var indices = new Uint32Array(indices_base);
     geometry.setIndex(new THREE.BufferAttribute(indices, 1));
     var material = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.merge([
-        THREE.UniformsLib['lights'],
+        THREE.UniformsLib["lights"],
         {
           time: {
-            type: 'f',
+            type: "f",
             value: 0,
           },
-        }
+        },
       ]),
-      vertexShader: require('./glsl/object.vs').default,
-      fragmentShader: require('./glsl/object.fs').default,
+      vertexShader: require("./glsl/object.vs").default,
+      fragmentShader: require("./glsl/object.fs").default,
       lights: true,
     });
     return new THREE.Mesh(geometry, material);
   };
 
-  var createBackground = function() {
+  var createBackground = function () {
     var geometry = new THREE.SphereGeometry(1200, 64, 64);
     var material = new THREE.ShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
+          type: "f",
           value: 0,
         },
       },
-      vertexShader: require('./glsl/bg.vs').default,
-      fragmentShader: require('./glsl/bg.fs').default,
+      vertexShader: require("./glsl/bg.vs").default,
+      fragmentShader: require("./glsl/bg.fs").default,
       side: THREE.BackSide,
     });
     return new THREE.Mesh(geometry, material);
   };
 
-  var createBackgroundWire = function() {
+  var createBackgroundWire = function () {
     var geometry = new THREE.SphereGeometry(1100, 64, 64);
     var material = new THREE.MeshBasicMaterial({
       color: 0xdddddd,
-      wireframe: true
+      wireframe: true,
     });
     return new THREE.Mesh(geometry, material);
   };
 
-  var createPointsInFramebuffer = function() {
+  var createPointsInFramebuffer = function () {
     var geometry = new THREE.BufferGeometry();
     var vertices_base = [];
     for (var i = 0; i < 2000; i++) {
@@ -175,60 +180,60 @@ export default function() {
       );
     }
     var vertices = new Float32Array(vertices_base);
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
     var material = new THREE.ShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
+          type: "f",
           value: 0,
         },
       },
-      vertexShader: require('./glsl/fb_points.vs').default,
-      fragmentShader: require('./glsl/fb_points.fs').default,
+      vertexShader: require("./glsl/fb_points.vs").default,
+      fragmentShader: require("./glsl/fb_points.fs").default,
     });
     return new THREE.Points(geometry, material);
   };
 
-  var createBackgroundInFramebuffer = function() {
+  var createBackgroundInFramebuffer = function () {
     var geometry = new THREE.SphereGeometry(1000, 128, 128);
     var material = new THREE.ShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
+          type: "f",
           value: 0,
         },
       },
-      vertexShader: require('./glsl/fb_bg.vs').default,
-      fragmentShader: require('./glsl/fb_bg.fs').default,
+      vertexShader: require("./glsl/fb_bg.vs").default,
+      fragmentShader: require("./glsl/fb_bg.fs").default,
       side: THREE.BackSide,
     });
     return new THREE.Mesh(geometry, material);
   };
 
-  var createPlaneForFramebuffer = function() {
+  var createPlaneForFramebuffer = function () {
     var geometry = new THREE.PlaneGeometry(1000, 1000);
     var material = new THREE.ShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
+          type: "f",
           value: 0,
         },
         resolution: {
-          type: 'v2',
-          value: new THREE.Vector2(window.innerWidth, window.innerHeight)
+          type: "v2",
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         texture: {
-          type: 't',
+          type: "t",
           value: render_target.texture,
         },
         texture2: {
-          type: 't',
+          type: "t",
           value: render_target2.texture,
         },
       },
-      vertexShader: require('./glsl/fb.vs').default,
-      fragmentShader: require('./glsl/fb.fs').default,
-      transparent: true
+      vertexShader: require("./glsl/fb.vs").default,
+      fragmentShader: require("./glsl/fb.fs").default,
+      transparent: true,
     });
     return new THREE.Mesh(geometry, material);
   };
@@ -257,11 +262,11 @@ export default function() {
     scene.add(bg_wf);
     obj = createObject();
     scene.add(obj);
-    light.position.set(0, 1, 0)
+    light.position.set(0, 1, 0);
     scene.add(light);
     camera.force.position.anchor.set(1000, 300, 0);
     camera.force.look.anchor.set(0, 0, 0);
-  }
+  };
 
   //
   // common process
@@ -272,9 +277,15 @@ export default function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    points.material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-    framebuffer.material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-  }
+    points.material.uniforms.resolution.value.set(
+      window.innerWidth,
+      window.innerHeight
+    );
+    framebuffer.material.uniforms.resolution.value.set(
+      window.innerWidth,
+      window.innerHeight
+    );
+  };
   const render = () => {
     points.material.uniforms.time.value++;
     framebuffer.lookAt(camera.position);
@@ -293,7 +304,8 @@ export default function() {
     camera.force.position.applyDrag(0.2);
     camera.force.position.updateVelocity();
     camera.updatePosition();
-    camera.force.look.anchor.y = Math.sin(points.material.uniforms.time.value / 100) * 100;
+    camera.force.look.anchor.y =
+      Math.sin(points.material.uniforms.time.value / 100) * 100;
     camera.force.look.applyHook(0, 0.2);
     camera.force.look.applyDrag(0.4);
     camera.updateLook();
@@ -311,11 +323,11 @@ export default function() {
     renderer.render(sub_scene, sub_camera);
     renderer.setRenderTarget(null);
     renderer.render(scene, camera);
-  }
+  };
   const renderLoop = () => {
     render();
     requestAnimationFrame(renderLoop);
-  }
+  };
   const on = () => {
     const vectorTouchStart = new THREE.Vector2();
     const vectorTouchMove = new THREE.Vector2();
@@ -339,38 +351,46 @@ export default function() {
       force.anchor.set(1, 0);
     };
 
-    window.addEventListener('resize', debounce(() => {
-      resizeWindow();
-    }), 1000);
-    canvas.addEventListener('mousedown', function (event) {
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        resizeWindow();
+      }),
+      1000
+    );
+    canvas.addEventListener("mousedown", function (event) {
       event.preventDefault();
       touchStart(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mousemove', function (event) {
+    canvas.addEventListener("mousemove", function (event) {
       event.preventDefault();
       touchMove(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mouseup', function (event) {
+    canvas.addEventListener("mouseup", function (event) {
       event.preventDefault();
       touchEnd(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('touchstart', function (event) {
+    canvas.addEventListener("touchstart", function (event) {
       event.preventDefault();
       touchStart(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchmove', function (event) {
+    canvas.addEventListener("touchmove", function (event) {
       event.preventDefault();
       touchMove(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchend', function (event) {
+    canvas.addEventListener("touchend", function (event) {
       event.preventDefault();
-      touchEnd(event.changedTouches[0].clientX, event.changedTouches[0].clientY, true);
+      touchEnd(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY,
+        true
+      );
     });
-    window.addEventListener('mouseout', function () {
+    window.addEventListener("mouseout", function () {
       event.preventDefault();
       mouseOut();
     });
-  }
+  };
 
   const init = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -382,6 +402,6 @@ export default function() {
     initSketch();
     resizeWindow();
     renderLoop();
-  }
+  };
   init();
 }

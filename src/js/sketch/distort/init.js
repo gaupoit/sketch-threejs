@@ -1,18 +1,23 @@
-import * as THREE from 'three';
-import debounce from 'js-util/debounce';
+import * as THREE from "three";
+import { debounce } from "@ykob/js-util";
 
-import normalizeVector2 from '../../common/normalizeVector2';
-import Force2 from '../../old/Force2';
-import ForceCamera from '../../old/ForceCamera';
+import normalizeVector2 from "../../common/normalizeVector2";
+import Force2 from "../../old/Force2";
+import ForceCamera from "../../old/ForceCamera";
 
-export default function() {
-  const canvas = document.getElementById('canvas-webgl');
+export default function () {
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     antialias: true,
     canvas: canvas,
   });
   const scene = new THREE.Scene();
-  const camera = new ForceCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+  const camera = new ForceCamera(
+    35,
+    window.innerWidth / window.innerHeight,
+    1,
+    10000
+  );
   const clock = new THREE.Clock();
 
   //
@@ -22,46 +27,55 @@ export default function() {
   var bg = null;
   var light = new THREE.HemisphereLight(0xffffff, 0x666666, 1);
   var sub_scene = new THREE.Scene();
-  var sub_camera = new ForceCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+  var sub_camera = new ForceCamera(
+    45,
+    window.innerWidth / window.innerHeight,
+    1,
+    10000
+  );
   var sub_light = new THREE.HemisphereLight(0xffffff, 0x666666, 1);
   var force = new Force2();
   var time_unit = 1;
-  var render_target = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
-    magFilter: THREE.NearestFilter,
-    minFilter: THREE.NearestFilter,
-    wrapS: THREE.ClampToEdgeWrapping,
-    wrapT: THREE.ClampToEdgeWrapping
-  })
+  var render_target = new THREE.WebGLRenderTarget(
+    window.innerWidth,
+    window.innerHeight,
+    {
+      magFilter: THREE.NearestFilter,
+      minFilter: THREE.NearestFilter,
+      wrapS: THREE.ClampToEdgeWrapping,
+      wrapT: THREE.ClampToEdgeWrapping,
+    }
+  );
   var framebuffer = null;
 
-  var createSphere = function() {
+  var createSphere = function () {
     var geometry = new THREE.OctahedronGeometry(200, 16);
     var material = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.merge([
-        THREE.UniformsLib['lights'],
+        THREE.UniformsLib["lights"],
         {
           time: {
-            type: 'f',
+            type: "f",
             value: 0,
           },
           radius: {
-            type: 'f',
-            value: 1.0
+            type: "f",
+            value: 1.0,
           },
           distort: {
-            type: 'f',
-            value: 0.4
-          }
-        }
+            type: "f",
+            value: 0.4,
+          },
+        },
       ]),
-      vertexShader: require('./glsl/object.vs').default,
-      fragmentShader: require('./glsl/object.fs').default,
+      vertexShader: require("./glsl/object.vs").default,
+      fragmentShader: require("./glsl/object.fs").default,
       lights: true,
     });
     return new THREE.Mesh(geometry, material);
   };
 
-  var createBackground = function() {
+  var createBackground = function () {
     var geometry = new THREE.SphereGeometry(1800);
     var material = new THREE.MeshPhongMaterial({
       side: THREE.BackSide,
@@ -69,35 +83,35 @@ export default function() {
     return new THREE.Mesh(geometry, material);
   };
 
-  var createPlaneForPostProcess = function() {
+  var createPlaneForPostProcess = function () {
     var geometry = new THREE.PlaneGeometry(2, 2);
     var material = new THREE.ShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
+          type: "f",
           value: 0,
         },
         resolution: {
-          type: 'v2',
-          value: new THREE.Vector2(window.innerWidth, window.innerHeight)
+          type: "v2",
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         acceleration: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         texture: {
-          type: 't',
+          type: "t",
           value: render_target.texture,
         },
       },
-      vertexShader: require('./glsl/posteffect.vs').default,
-      fragmentShader: require('./glsl/posteffect.fs').default,
+      vertexShader: require("./glsl/posteffect.vs").default,
+      fragmentShader: require("./glsl/posteffect.fs").default,
     });
     return new THREE.Mesh(geometry, material);
-  }
+  };
 
   const initSketch = () => {
-    document.body.className = 'bg-white';
+    document.body.className = "bg-white";
     sphere = createSphere();
     sub_scene.add(sphere);
     bg = createBackground();
@@ -116,7 +130,7 @@ export default function() {
     force.velocity.set(1, 0);
     force.k = 0.045;
     force.d = 0.16;
-  }
+  };
 
   //
   // common process
@@ -129,8 +143,11 @@ export default function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     render_target.setSize(window.innerWidth, window.innerHeight);
     sub_camera.resize(window.innerWidth, window.innerHeight);
-    framebuffer.material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-  }
+    framebuffer.material.uniforms.resolution.value.set(
+      window.innerWidth,
+      window.innerHeight
+    );
+  };
   const render = () => {
     force.applyHook(0, force.k);
     force.applyDrag(force.d);
@@ -148,7 +165,8 @@ export default function() {
     sub_camera.updateLook();
 
     framebuffer.material.uniforms.time.value += time_unit;
-    framebuffer.material.uniforms.acceleration.value = force.acceleration.length();
+    framebuffer.material.uniforms.acceleration.value =
+      force.acceleration.length();
     camera.force.position.applyHook(0, 0.025);
     camera.force.position.applyDrag(0.2);
     camera.force.position.updateVelocity();
@@ -162,11 +180,11 @@ export default function() {
     renderer.render(sub_scene, sub_camera);
     renderer.setRenderTarget(null);
     renderer.render(scene, camera);
-  }
+  };
   const renderLoop = () => {
     render();
     requestAnimationFrame(renderLoop);
-  }
+  };
   const on = () => {
     const vectorTouchStart = new THREE.Vector2();
     const vectorTouchMove = new THREE.Vector2();
@@ -198,38 +216,46 @@ export default function() {
       vectorTouchEnd.set(0, 0);
     };
 
-    window.addEventListener('resize', debounce(() => {
-      resizeWindow();
-    }), 1000);
-    canvas.addEventListener('mousedown', function (event) {
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        resizeWindow();
+      }),
+      1000
+    );
+    canvas.addEventListener("mousedown", function (event) {
       event.preventDefault();
       touchStart(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mousemove', function (event) {
+    canvas.addEventListener("mousemove", function (event) {
       event.preventDefault();
       touchMove(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mouseup', function (event) {
+    canvas.addEventListener("mouseup", function (event) {
       event.preventDefault();
       touchEnd(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('touchstart', function (event) {
+    canvas.addEventListener("touchstart", function (event) {
       event.preventDefault();
       touchStart(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchmove', function (event) {
+    canvas.addEventListener("touchmove", function (event) {
       event.preventDefault();
       touchMove(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchend', function (event) {
+    canvas.addEventListener("touchend", function (event) {
       event.preventDefault();
-      touchEnd(event.changedTouches[0].clientX, event.changedTouches[0].clientY, true);
+      touchEnd(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY,
+        true
+      );
     });
-    window.addEventListener('mouseout', function () {
+    window.addEventListener("mouseout", function () {
       event.preventDefault();
       mouseOut();
     });
-  }
+  };
 
   const init = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -241,6 +267,6 @@ export default function() {
     initSketch();
     resizeWindow();
     renderLoop();
-  }
+  };
   init();
 }

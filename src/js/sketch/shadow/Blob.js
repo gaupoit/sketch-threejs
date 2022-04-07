@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/Blob.vs';
-import fs from './glsl/Blob.fs';
+import vs from "./glsl/Blob.vs";
+import fs from "./glsl/Blob.fs";
 
 export default class Blob extends THREE.Mesh {
   constructor() {
@@ -12,10 +12,10 @@ export default class Blob extends THREE.Mesh {
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: {
-        ...THREE.UniformsLib['lights'],
+        ...THREE.UniformsLib["lights"],
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
       vertexShader: vs,
@@ -25,13 +25,12 @@ export default class Blob extends THREE.Mesh {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Blob';
+    this.name = "Blob";
     this.position.set(0, 8, 0);
     this.castShadow = true;
     this.receiveShadow = false;
   }
-  start() {
-  }
+  start() {}
   update(time) {
     this.material.uniforms.time.value += time;
     this.rotation.set(

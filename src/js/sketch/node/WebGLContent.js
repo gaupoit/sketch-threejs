@@ -1,10 +1,10 @@
-import * as THREE from 'three';
-import sleep from 'js-util/sleep';
+import * as THREE from "three";
+import { sleep } from "@ykob/js-util";
 
-import NodePoints from './NodePoints';
-import NodeLine from './NodeLine';
+import NodePoints from "./NodePoints";
+import NodeLine from "./NodeLine";
 
-const canvas = document.getElementById('canvas-webgl');
+const canvas = document.getElementById("canvas-webgl");
 const renderer = new THREE.WebGL1Renderer({
   alpha: true,
   antialias: true,
@@ -14,7 +14,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera();
 const cameraResolution = new THREE.Vector2();
 const clock = new THREE.Clock({
-  autoStart: false
+  autoStart: false,
 });
 
 let nodePoints;
@@ -26,8 +26,7 @@ const resizeCamera = (resolution) => {
 };
 
 export default class WebGLContent {
-  constructor() {
-  }
+  constructor() {}
   async init(resolution) {
     renderer.setClearColor(0xffc600, 1.0);
 

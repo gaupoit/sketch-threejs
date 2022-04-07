@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/Fog.vs';
-import fs from './glsl/Fog.fs';
+import vs from "./glsl/Fog.vs";
+import fs from "./glsl/Fog.fs";
 
 export default class Fog extends THREE.Mesh {
   constructor() {
@@ -13,24 +13,24 @@ export default class Fog extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         hex: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         fogTex: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
         maskTex: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
         direction: {
-          type: 'v2',
-          value: new THREE.Vector2()
+          type: "v2",
+          value: new THREE.Vector2(),
         },
       },
       vertexShader: vs,
@@ -42,13 +42,13 @@ export default class Fog extends THREE.Mesh {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Fog';
+    this.name = "Fog";
 
     const radians = MathEx.radians(Math.random() * 360);
     this.material.uniforms.direction.value.set(
       Math.cos(radians),
       Math.sin(radians)
-    )
+    );
   }
   start(hex, fogTex, maskTex) {
     this.material.uniforms.hex.value = hex;

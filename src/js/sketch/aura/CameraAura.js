@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
 export default class CameraAura extends THREE.PerspectiveCamera {
   constructor(fov, aspect, near, far) {
@@ -14,7 +14,10 @@ export default class CameraAura extends THREE.PerspectiveCamera {
     this.distance = Math.abs(Math.tan(MathEx.radians(this.fov) / 2) * 2) * 30;
   }
   update(camera) {
-    this.position.copy(camera.position).normalize().multiplyScalar(this.distance);
+    this.position
+      .copy(camera.position)
+      .normalize()
+      .multiplyScalar(this.distance);
     this.lookAt(new THREE.Vector3());
   }
 }

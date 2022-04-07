@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/crystalSparkle.vs';
-import fs from './glsl/crystalSparkle.fs';
+import vs from "./glsl/crystalSparkle.vs";
+import fs from "./glsl/crystalSparkle.fs";
 
 const NUM = 500;
 
@@ -22,26 +22,29 @@ export default class CrystalSparkle extends THREE.Points {
       const spherical = MathEx.spherical(radian1, radian2, radius);
       baPositions.setXYZ(i, spherical[0], spherical[1], spherical[2]);
       baDelay.setXYZ(i, Math.random());
-      baSpeed.setXYZ(i, MathEx.randomArbitrary(1, 10) * (MathEx.randomInt(0, 1) * 2.0 - 1.0));
+      baSpeed.setXYZ(
+        i,
+        MathEx.randomArbitrary(1, 10) * (MathEx.randomInt(0, 1) * 2.0 - 1.0)
+      );
     }
-    geometry.setAttribute('position', baPositions);
-    geometry.setAttribute('delay', baDelay);
-    geometry.setAttribute('speed', baSpeed);
+    geometry.setAttribute("position", baPositions);
+    geometry.setAttribute("delay", baDelay);
+    geometry.setAttribute("speed", baSpeed);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         pixelRatio: {
-          type: 'f',
-          value: window.devicePixelRatio
+          type: "f",
+          value: window.devicePixelRatio,
         },
         hex: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
       vertexShader: vs,
@@ -51,10 +54,9 @@ export default class CrystalSparkle extends THREE.Points {
       blending: THREE.AdditiveBlending,
     });
 
-
     // Create Object3D
     super(geometry, material);
-    this.name = 'CrystalSparkle';
+    this.name = "CrystalSparkle";
   }
   start(hex) {
     this.material.uniforms.hex.value = hex;

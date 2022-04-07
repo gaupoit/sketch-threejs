@@ -1,20 +1,25 @@
-import * as THREE from 'three';
-import debounce from 'js-util/debounce';
+import * as THREE from "three";
+import { debounce } from "@ykob/js-util";
 
-import normalizeVector2 from '../../common/normalizeVector2';
-import Mover from '../../old/Mover';
-import Points from '../../old/Points';
-import ForceCamera from '../../old/ForceCamera';
-import Util from '../../old/util';
+import normalizeVector2 from "../../common/normalizeVector2";
+import Mover from "../../old/Mover";
+import Points from "../../old/Points";
+import ForceCamera from "../../old/ForceCamera";
+import Util from "../../old/util";
 
-export default function() {
-  const canvas = document.getElementById('canvas-webgl');
+export default function () {
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     antialias: true,
     canvas: canvas,
   });
   const scene = new THREE.Scene();
-  const camera = new ForceCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+  const camera = new ForceCamera(
+    35,
+    window.innerWidth / window.innerHeight,
+    1,
+    10000
+  );
   const clock = new THREE.Clock();
 
   //
@@ -31,16 +36,16 @@ export default function() {
   var points = new Points();
   var created_points = false;
 
-  var loadImage = function(callback) {
-    image.src = '../img/sketch/image_data/elephant.png';
-    image.onload = function() {
+  var loadImage = function (callback) {
+    image.src = "../img/sketch/image_data/elephant.png";
+    image.onload = function () {
       callback();
     };
   };
 
-  var getImageData = function() {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
+  var getImageData = function () {
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
     canvas.width = length_side;
     canvas.height = length_side;
     ctx.drawImage(image, 0, 0);
@@ -49,14 +54,18 @@ export default function() {
       if (y % 3 > 0) continue;
       for (var x = 0; x < length_side; x++) {
         if (x % 3 > 0) continue;
-        if(image_data.data[(x + y * length_side) * 4] > 0) {
-          image_vertices.push(0, (y - length_side / 2) * -1, (x - length_side/ 2) * -1);
+        if (image_data.data[(x + y * length_side) * 4] > 0) {
+          image_vertices.push(
+            0,
+            (y - length_side / 2) * -1,
+            (x - length_side / 2) * -1
+          );
         }
       }
     }
   };
 
-  var buildPoints = function(scene) {
+  var buildPoints = function (scene) {
     positions = new Float32Array(image_vertices);
     colors = new Float32Array(image_vertices.length);
     opacities = new Float32Array(image_vertices.length / 3);
@@ -64,9 +73,20 @@ export default function() {
     for (var i = 0; i < image_vertices.length / 3; i++) {
       var mover = new Mover();
       var color = new THREE.Color(
-                                  'hsl(' + (image_vertices[i * 3 + 2] + image_vertices[i * 3 + 1] + length_side) / 5
-                                  + ', 60%, 80%)');
-      mover.init(new THREE.Vector3(image_vertices[i * 3], image_vertices[i * 3 + 1], image_vertices[i * 3 + 2]));
+        "hsl(" +
+          (image_vertices[i * 3 + 2] +
+            image_vertices[i * 3 + 1] +
+            length_side) /
+            5 +
+          ", 60%, 80%)"
+      );
+      mover.init(
+        new THREE.Vector3(
+          image_vertices[i * 3],
+          image_vertices[i * 3 + 1],
+          image_vertices[i * 3 + 2]
+        )
+      );
       mover.is_activate = true;
       movers.push(mover);
       color.toArray(colors, i * 3);
@@ -75,19 +95,19 @@ export default function() {
     }
     points.init({
       scene: scene,
-      vs: require('../../old/glsl/points.vs').default,
-      fs: require('../../old/glsl/points.fs').default,
+      vs: require("../../old/glsl/points.vs").default,
+      fs: require("../../old/glsl/points.fs").default,
       positions: positions,
       colors: colors,
       opacities: opacities,
       sizes: sizes,
       texture: createTexture(),
-      blending: THREE.NormalBlending
+      blending: THREE.NormalBlending,
     });
     created_points = true;
   };
 
-  var applyForceToPoints = function() {
+  var applyForceToPoints = function () {
     for (var i = 0; i < movers.length; i++) {
       var mover = movers[i];
       var rad1 = Util.getRadian(Util.getRandomInt(0, 360));
@@ -98,7 +118,7 @@ export default function() {
     }
   };
 
-  var updateMover =  function() {
+  var updateMover = function () {
     for (var i = 0; i < movers.length; i++) {
       var mover = movers[i];
       mover.time++;
@@ -116,24 +136,26 @@ export default function() {
       positions[i * 3 + 0] = mover.velocity.x - points.velocity.x;
       positions[i * 3 + 1] = mover.velocity.y - points.velocity.x;
       positions[i * 3 + 2] = mover.velocity.z - points.velocity.x;
-      mover.size = Math.log(Util.getRandomInt(1, 128)) / Math.log(128) * Math.sqrt(document.body.clientWidth);
+      mover.size =
+        (Math.log(Util.getRandomInt(1, 128)) / Math.log(128)) *
+        Math.sqrt(document.body.clientWidth);
       sizes[i] = mover.size;
     }
     points.updatePoints();
   };
 
-  var createTexture = function() {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
+  var createTexture = function () {
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
     var grad = null;
     var texture = null;
 
     canvas.width = 200;
     canvas.height = 200;
     grad = ctx.createRadialGradient(100, 100, 20, 100, 100, 100);
-    grad.addColorStop(0.2, 'rgba(255, 255, 255, 1)');
-    grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
-    grad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');
+    grad.addColorStop(0.2, "rgba(255, 255, 255, 1)");
+    grad.addColorStop(0.5, "rgba(255, 255, 255, 0.3)");
+    grad.addColorStop(1.0, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = grad;
     ctx.arc(100, 100, 100, 0, Math.PI / 180, true);
     ctx.fill();
@@ -145,12 +167,12 @@ export default function() {
   };
 
   const initSketch = () => {
-    loadImage(function() {
+    loadImage(function () {
       getImageData();
       buildPoints(scene);
     });
     camera.setPolarCoord(0, 0, 1400);
-  }
+  };
 
   //
   // common process
@@ -161,7 +183,7 @@ export default function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-  }
+  };
   const render = () => {
     if (created_points) {
       updateMover();
@@ -173,11 +195,11 @@ export default function() {
     camera.updatePosition();
     camera.lookAtCenter();
     renderer.render(scene, camera);
-  }
+  };
   const renderLoop = () => {
     render();
     requestAnimationFrame(renderLoop);
-  }
+  };
   const on = () => {
     const vectorTouchStart = new THREE.Vector2();
     const vectorTouchMove = new THREE.Vector2();
@@ -205,38 +227,46 @@ export default function() {
       camera.force.position.anchor.y = 0;
     };
 
-    window.addEventListener('resize', debounce(() => {
-      resizeWindow();
-    }), 1000);
-    canvas.addEventListener('mousedown', function (event) {
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        resizeWindow();
+      }),
+      1000
+    );
+    canvas.addEventListener("mousedown", function (event) {
       event.preventDefault();
       touchStart(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mousemove', function (event) {
+    canvas.addEventListener("mousemove", function (event) {
       event.preventDefault();
       touchMove(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('mouseup', function (event) {
+    canvas.addEventListener("mouseup", function (event) {
       event.preventDefault();
       touchEnd(event.clientX, event.clientY, false);
     });
-    canvas.addEventListener('touchstart', function (event) {
+    canvas.addEventListener("touchstart", function (event) {
       event.preventDefault();
       touchStart(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchmove', function (event) {
+    canvas.addEventListener("touchmove", function (event) {
       event.preventDefault();
       touchMove(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchend', function (event) {
+    canvas.addEventListener("touchend", function (event) {
       event.preventDefault();
-      touchEnd(event.changedTouches[0].clientX, event.changedTouches[0].clientY, true);
+      touchEnd(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY,
+        true
+      );
     });
-    window.addEventListener('mouseout', function () {
+    window.addEventListener("mouseout", function () {
       event.preventDefault();
       mouseOut();
     });
-  }
+  };
 
   const init = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -248,6 +278,6 @@ export default function() {
     initSketch();
     resizeWindow();
     renderLoop();
-  }
+  };
   init();
 }

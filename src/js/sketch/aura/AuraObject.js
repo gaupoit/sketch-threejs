@@ -1,13 +1,13 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import TorusKnot from './TorusKnot';
-import Aura from './Aura';
+import TorusKnot from "./TorusKnot";
+import Aura from "./Aura";
 
 export default class AuraObject extends THREE.Group {
   constructor(alpha) {
     super();
-    this.name = 'AuraObject';
+    this.name = "AuraObject";
     this.obj = new TorusKnot();
     this.aura = new Aura();
     this.add(this.aura);
@@ -53,9 +53,8 @@ export default class AuraObject extends THREE.Group {
     this.position.set(
       Math.cos(this.radian) * 11,
       0,
-      Math.sin(this.radian) * 11,
+      Math.sin(this.radian) * 11
     );
   }
-  resize(camera) {
-  }
+  resize(camera) {}
 }

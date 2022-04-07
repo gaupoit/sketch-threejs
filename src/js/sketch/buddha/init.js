@@ -1,23 +1,23 @@
-import * as THREE from 'three';
-import debounce from 'js-util/debounce';
-import sleep from 'js-util/sleep';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { debounce } from "@ykob/js-util";
+import { sleep } from "@ykob/js-util";
+import { MathEx } from "@ykob/js-util";
 
-import BuddhaHead from './BuddhaHead';
-import Typo from './Typo';
-import Wave from './Wave';
-import Points from './Points';
-import Aura from './Aura';
-import BackgroundSphere from './BackgroundSphere';
-import PostEffect from './PostEffect';
-import Drag from './Drag';
+import BuddhaHead from "./BuddhaHead";
+import Typo from "./Typo";
+import Wave from "./Wave";
+import Points from "./Points";
+import Aura from "./Aura";
+import BackgroundSphere from "./BackgroundSphere";
+import PostEffect from "./PostEffect";
+import Drag from "./Drag";
 
-export default async function() {
+export default async function () {
   // ==========
   // Define common variables
   //
   const resolution = new THREE.Vector2();
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     alpha: true,
     antialias: true,
@@ -26,7 +26,7 @@ export default async function() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera();
   const clock = new THREE.Clock({
-    autoStart: false
+    autoStart: false,
   });
 
   // For the post effect.
@@ -35,7 +35,7 @@ export default async function() {
   const cameraPE = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 2);
 
   // For the preloader.
-  const preloader = document.querySelector('.p-preloader');
+  const preloader = document.querySelector(".p-preloader");
 
   // ==========
   // Define unique variables
@@ -102,21 +102,21 @@ export default async function() {
   const on = () => {
     const touchstart = (e) => {
       dd.touchStart(e);
-    }
+    };
     const touchmove = (e) => {
       dd.touchMove(e);
-    }
+    };
     const touchend = (e) => {
       dd.touchEnd(e);
-    }
-    canvas.addEventListener('mousedown', touchstart, { passive: false });
-    window.addEventListener('mousemove', touchmove, { passive: false });
-    window.addEventListener('mouseup', touchend);
-    canvas.addEventListener('touchstart', touchstart, { passive: false });
-    window.addEventListener('touchmove', touchmove, { passive: false });
-    window.addEventListener('touchend', touchend);
+    };
+    canvas.addEventListener("mousedown", touchstart, { passive: false });
+    window.addEventListener("mousemove", touchmove, { passive: false });
+    window.addEventListener("mouseup", touchend);
+    canvas.addEventListener("touchstart", touchstart, { passive: false });
+    window.addEventListener("touchmove", touchmove, { passive: false });
+    window.addEventListener("touchend", touchend);
 
-    window.addEventListener('resize', debounce(resizeWindow, 100));
+    window.addEventListener("resize", debounce(resizeWindow, 100));
   };
 
   // ==========
@@ -148,7 +148,7 @@ export default async function() {
   on();
   resizeWindow();
 
-  preloader.classList.add('is-hidden');
+  preloader.classList.add("is-hidden");
   await sleep(200);
 
   clock.start();

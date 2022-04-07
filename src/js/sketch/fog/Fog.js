@@ -1,17 +1,17 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Fog {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       tex: {
-        type: 't',
-        value: null
-      }
+        type: "t",
+        value: null,
+      },
     };
     this.num = 200;
     this.obj;
@@ -25,28 +25,37 @@ export default class Fog {
     geometry.copy(baseGeometry);
 
     // Define attributes of the instancing geometry
-    const instancePositions = new THREE.InstancedBufferAttribute(new Float32Array(this.num * 3), 3);
-    const delays = new THREE.InstancedBufferAttribute(new Float32Array(this.num), 1);
-    const rotates = new THREE.InstancedBufferAttribute(new Float32Array(this.num), 1);
-    for ( var i = 0, ul = this.num; i < ul; i++ ) {
+    const instancePositions = new THREE.InstancedBufferAttribute(
+      new Float32Array(this.num * 3),
+      3
+    );
+    const delays = new THREE.InstancedBufferAttribute(
+      new Float32Array(this.num),
+      1
+    );
+    const rotates = new THREE.InstancedBufferAttribute(
+      new Float32Array(this.num),
+      1
+    );
+    for (var i = 0, ul = this.num; i < ul; i++) {
       instancePositions.setXYZ(
         i,
         (Math.random() * 2 - 1) * 850,
         0,
-        (Math.random() * 2 - 1) * 300,
+        (Math.random() * 2 - 1) * 300
       );
       delays.setXYZ(i, Math.random());
       rotates.setXYZ(i, Math.random() * 2 + 1);
     }
-    geometry.setAttribute('instancePosition', instancePositions);
-    geometry.setAttribute('delay', delays);
-    geometry.setAttribute('rotate', rotates);
+    geometry.setAttribute("instancePosition", instancePositions);
+    geometry.setAttribute("delay", delays);
+    geometry.setAttribute("rotate", rotates);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/fog.vs').default,
-      fragmentShader: require('./glsl/fog.fs').default,
+      vertexShader: require("./glsl/fog.vs").default,
+      fragmentShader: require("./glsl/fog.fs").default,
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,

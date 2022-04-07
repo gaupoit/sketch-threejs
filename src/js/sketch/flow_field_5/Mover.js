@@ -1,18 +1,18 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import MoverCore from './MoverCore';
-import MoverTrail from './MoverTrail';
-import PhysicsRenderer from './PhysicsRenderer';
+import MoverCore from "./MoverCore";
+import MoverTrail from "./MoverTrail";
+import PhysicsRenderer from "./PhysicsRenderer";
 
-import vsa from './glsl/physicsRendererAcceleration.vs';
-import fsa from './glsl/physicsRendererAcceleration.fs';
-import vsa2 from './glsl/physicsRendererAcceleration2.vs';
-import fsa2 from './glsl/physicsRendererAcceleration2.fs';
-import vsv from './glsl/physicsRendererVelocity.vs';
-import fsv from './glsl/physicsRendererVelocity.fs';
-import vsv2 from './glsl/physicsRendererVelocity2.vs';
-import fsv2 from './glsl/physicsRendererVelocity2.fs';
+import vsa from "./glsl/physicsRendererAcceleration.vs";
+import fsa from "./glsl/physicsRendererAcceleration.fs";
+import vsa2 from "./glsl/physicsRendererAcceleration2.vs";
+import fsa2 from "./glsl/physicsRendererAcceleration2.fs";
+import vsv from "./glsl/physicsRendererVelocity.vs";
+import fsv from "./glsl/physicsRendererVelocity.fs";
+import vsv2 from "./glsl/physicsRendererVelocity2.vs";
+import fsv2 from "./glsl/physicsRendererVelocity2.fs";
 
 const COUNT = 5000;
 const HEIGHT_SEGMENTS = 5;
@@ -21,7 +21,7 @@ export default class Mover extends THREE.Group {
   constructor() {
     super();
 
-    this.name = 'Mover';
+    this.name = "Mover";
     this.core = new MoverCore(COUNT);
     this.trail = new MoverTrail(COUNT, HEIGHT_SEGMENTS);
     this.physicsRenderers = [];
@@ -36,7 +36,7 @@ export default class Mover extends THREE.Group {
     const vArrayBase = [];
     const hOptArrayBase = [];
 
-    for (var i = 0; i < COUNT * 3; i+= 3) {
+    for (var i = 0; i < COUNT * 3; i += 3) {
       const radian = MathEx.radians(Math.random() * 360);
       const radius = 300;
 
@@ -52,36 +52,28 @@ export default class Mover extends THREE.Group {
     for (let i = 0; i < HEIGHT_SEGMENTS; i++) {
       if (i === 0) {
         this.physicsRenderers[i] = new PhysicsRenderer(vsa, fsa, vsv, fsv);
-        this.physicsRenderers[i].start(
-          renderer,
-          aArrayBase,
-          vArrayBase
-        );
+        this.physicsRenderers[i].start(renderer, aArrayBase, vArrayBase);
         this.physicsRenderers[i].mergeAUniforms({
           noiseTex: {
-            value: noiseTex
+            value: noiseTex,
           },
           multiTime: {
-            value: this.multiTime
+            value: this.multiTime,
           },
           anchor: {
-            value: new THREE.Vector3()
+            value: new THREE.Vector3(),
           },
           hookOptions: {
-            value: this.physicsRenderers[0].createDataTexture(hOptArrayBase)
-          }
+            value: this.physicsRenderers[0].createDataTexture(hOptArrayBase),
+          },
         });
       } else {
         this.physicsRenderers[i] = new PhysicsRenderer(vsa2, fsa2, vsv2, fsv2);
-        this.physicsRenderers[i].start(
-          renderer,
-          null,
-          vArrayBase
-        );
+        this.physicsRenderers[i].start(renderer, null, vArrayBase);
         this.physicsRenderers[i].mergeAUniforms({
           prevVelocity: {
-            value: this.physicsRenderers[i - 1].getCurrentVelocity()
-          }
+            value: this.physicsRenderers[i - 1].getCurrentVelocity(),
+          },
         });
       }
     }
@@ -97,7 +89,8 @@ export default class Mover extends THREE.Group {
       if (i === 0) {
         fr.aUniforms.anchor.value.copy(core.position);
       } else {
-        fr.aUniforms.prevVelocity.value = this.physicsRenderers[i - 1].getCurrentVelocity()
+        fr.aUniforms.prevVelocity.value =
+          this.physicsRenderers[i - 1].getCurrentVelocity();
       }
       fr.update(renderer, time);
     }

@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/background.vs';
-import fs from './glsl/background.fs';
+import vs from "./glsl/background.vs";
+import fs from "./glsl/background.fs";
 
 export default class Background extends THREE.Mesh {
   constructor() {
@@ -13,8 +13,8 @@ export default class Background extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
       vertexShader: vs,
@@ -24,10 +24,9 @@ export default class Background extends THREE.Mesh {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Background';
+    this.name = "Background";
   }
-  start() {
-  }
+  start() {}
   update(time) {
     this.material.uniforms.time.value += time;
   }

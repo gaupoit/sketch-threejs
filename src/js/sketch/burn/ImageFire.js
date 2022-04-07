@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/ImageFire.vs';
-import fs from './glsl/ImageFire.fs';
+import vs from "./glsl/ImageFire.vs";
+import fs from "./glsl/ImageFire.fs";
 
 export default class ImageFire extends THREE.Mesh {
   constructor() {
@@ -13,20 +13,20 @@ export default class ImageFire extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         easeTransition: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         noiseTex: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
         imgRatio: {
-          type: 'v2',
-          value: new THREE.Vector2()
+          type: "v2",
+          value: new THREE.Vector2(),
         },
       },
       vertexShader: vs,
@@ -37,7 +37,7 @@ export default class ImageFire extends THREE.Mesh {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'ImageFire';
+    this.name = "ImageFire";
   }
   start(noiseTex) {
     this.material.uniforms.noiseTex.value = noiseTex;

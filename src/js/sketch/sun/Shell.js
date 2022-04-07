@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/shell.vs';
-import fs from './glsl/shell.fs';
+import vs from "./glsl/shell.vs";
+import fs from "./glsl/shell.fs";
 
 export default class Shell extends THREE.Mesh {
   constructor() {
@@ -13,16 +13,16 @@ export default class Shell extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         texture: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
         textureNormal: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
       },
       vertexShader: vs,
@@ -34,7 +34,7 @@ export default class Shell extends THREE.Mesh {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Shell';
+    this.name = "Shell";
   }
   start(texture, textureNormal) {
     this.material.uniforms.texture.value = texture;

@@ -1,12 +1,12 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Node {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -15,21 +15,28 @@ export default class Node {
   }
   createObj() {
     // Define Geometry
-    const geometry = new THREE.RingGeometry(1550, 1600, 36, 2, MathEx.radians(135), MathEx.radians(270));
+    const geometry = new THREE.RingGeometry(
+      1550,
+      1600,
+      36,
+      2,
+      MathEx.radians(135),
+      MathEx.radians(270)
+    );
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/node.vs').default,
-      fragmentShader: require('./glsl/node.fs').default,
+      vertexShader: require("./glsl/node.vs").default,
+      fragmentShader: require("./glsl/node.fs").default,
       depthWrite: false,
       transparent: true,
       blending: THREE.AdditiveBlending,
     });
     const materialWire = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/node.vs').default,
-      fragmentShader: require('./glsl/nodeWire.fs').default,
+      vertexShader: require("./glsl/node.vs").default,
+      fragmentShader: require("./glsl/nodeWire.fs").default,
       depthWrite: false,
       transparent: true,
       blending: THREE.AdditiveBlending,
@@ -37,8 +44,8 @@ export default class Node {
     });
     const materialPoints = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/nodePoints.vs').default,
-      fragmentShader: require('./glsl/nodePoints.fs').default,
+      vertexShader: require("./glsl/nodePoints.vs").default,
+      fragmentShader: require("./glsl/nodePoints.fs").default,
       depthWrite: false,
       transparent: true,
       blending: THREE.AdditiveBlending,
@@ -59,7 +66,7 @@ export default class Node {
       MathEx.radians(Math.sin(this.uniforms.time.value * 0.1) * 20 + 90),
       MathEx.radians(Math.sin(this.uniforms.time.value * 0.05) * 20),
       0,
-    ]
+    ];
     this.obj.rotation.set(rotation[0], rotation[1], rotation[2]);
     this.objWire.rotation.set(rotation[0], rotation[1], rotation[2]);
     this.objPoints.rotation.set(rotation[0], rotation[1], rotation[2]);

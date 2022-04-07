@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
 export default class BackgroundSphere extends THREE.Mesh {
   constructor() {
@@ -10,12 +10,12 @@ export default class BackgroundSphere extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
-      vertexShader: require('./glsl/backgroundSphere.vs').default,
-      fragmentShader: require('./glsl/backgroundSphere.fs').default,
+      vertexShader: require("./glsl/backgroundSphere.vs").default,
+      fragmentShader: require("./glsl/backgroundSphere.fs").default,
       side: THREE.BackSide,
       depthWrite: false,
     });
@@ -31,7 +31,11 @@ export default class BackgroundSphere extends THREE.Mesh {
     } else {
       this.material.uniforms.time.value -= time;
     }
-    this.material.uniforms.time.value = MathEx.clamp(this.material.uniforms.time.value, 0, 0.8);
+    this.material.uniforms.time.value = MathEx.clamp(
+      this.material.uniforms.time.value,
+      0,
+      0.8
+    );
   }
   over() {
     this.material.uniforms.time.value = 0;

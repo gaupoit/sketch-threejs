@@ -1,12 +1,12 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
 export default class Aura {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -18,8 +18,8 @@ export default class Aura {
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/aura.vs').default,
-      fragmentShader: require('./glsl/aura.fs').default,
+      vertexShader: require("./glsl/aura.vs").default,
+      fragmentShader: require("./glsl/aura.fs").default,
       transparent: true,
     });
 

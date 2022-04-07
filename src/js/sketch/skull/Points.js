@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/Points.vs';
-import fs from './glsl/Points.fs';
+import vs from "./glsl/Points.vs";
+import fs from "./glsl/Points.fs";
 
 const DURATION = 4;
 const NUM = 360;
@@ -26,31 +26,31 @@ export default class Points extends THREE.Points {
       );
       baDelays.setX(i, Math.random() * DURATION);
     }
-    geometry.setAttribute('position', baPositions);
-    geometry.setAttribute('delay', baDelays);
+    geometry.setAttribute("position", baPositions);
+    geometry.setAttribute("delay", baDelays);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         duration: {
-          type: 'f',
-          value: DURATION
+          type: "f",
+          value: DURATION,
         },
         resolution: {
-          type: 'v2',
-          value: new THREE.Vector2()
+          type: "v2",
+          value: new THREE.Vector2(),
         },
         pixelRatio: {
-          type: 'f',
-          value: window.devicePixelRatio
+          type: "f",
+          value: window.devicePixelRatio,
         },
         noiseTex: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
       },
       vertexShader: vs,
@@ -62,18 +62,14 @@ export default class Points extends THREE.Points {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Points';
+    this.name = "Points";
   }
   start(noiseTex) {
     this.material.uniforms.noiseTex.value = noiseTex;
   }
   update(time) {
     this.material.uniforms.time.value += time;
-    this.rotation.set(
-      0,
-      this.material.uniforms.time.value * 0.2,
-      0
-    );
+    this.rotation.set(0, this.material.uniforms.time.value * 0.2, 0);
   }
   resize(resolution) {
     this.material.uniforms.resolution.value.copy(resolution);

@@ -1,5 +1,5 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Drag {
   constructor(resolution) {
@@ -18,22 +18,26 @@ export default class Drag {
     this.vPrev.copy(this.v);
     this.a.set(0, 0);
     this.vTouchStart.set(
-      (e.touches) ? e.touches[0].clientX : e.clientX,
-      (e.touches) ? e.touches[0].clientY : e.clientY
+      e.touches ? e.touches[0].clientX : e.clientX,
+      e.touches ? e.touches[0].clientY : e.clientY
     );
     this.isTouched = true;
   }
   touchMove(e) {
     e.preventDefault();
 
-    const x = (e.touches) ? e.touches[0].clientX : e.clientX;
-    const y = (e.touches) ? e.touches[0].clientY : e.clientY;
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    const y = e.touches ? e.touches[0].clientY : e.clientY;
 
     if (this.isTouched === false) return;
 
     this.anchor.set(
       (x - this.vTouchStart.x) / (this.resolution.x / 200) + this.vPrev.x,
-      MathEx.clamp((y - this.vTouchStart.y) / (this.resolution.y / 200) + this.vPrev.y, -90, 90)
+      MathEx.clamp(
+        (y - this.vTouchStart.y) / (this.resolution.y / 200) + this.vPrev.y,
+        -90,
+        90
+      )
     );
   }
   touchEnd(e) {

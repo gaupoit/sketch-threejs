@@ -1,12 +1,12 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
 export default class Points {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -26,18 +26,21 @@ export default class Points {
       delays1[i / 3] = Math.random() * 120;
       delays2[i / 3] = Math.random() * 120;
     }
-    const baPositions = new THREE.BufferAttribute(new Float32Array(positions), 3);
+    const baPositions = new THREE.BufferAttribute(
+      new Float32Array(positions),
+      3
+    );
     const baDelays1 = new THREE.BufferAttribute(new Float32Array(delays1), 1);
     const baDelays2 = new THREE.BufferAttribute(new Float32Array(delays2), 1);
-    geometry.setAttribute('position', baPositions);
-    geometry.setAttribute('delay1', baDelays1);
-    geometry.setAttribute('delay2', baDelays2);
+    geometry.setAttribute("position", baPositions);
+    geometry.setAttribute("delay1", baDelays1);
+    geometry.setAttribute("delay2", baDelays2);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/points.vs').default,
-      fragmentShader: require('./glsl/points.fs').default,
+      vertexShader: require("./glsl/points.vs").default,
+      fragmentShader: require("./glsl/points.fs").default,
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,

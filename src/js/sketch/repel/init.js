@@ -1,15 +1,15 @@
-const THREE = require('three');
-const debounce = require('js-util/debounce');
-const loadTexs = require('../../common/loadTexs').default;
-const Points = require('./Points').default;
+const THREE = require("three");
+import { debounce } from "@ykob/js-util";
+const loadTexs = require("../../common/loadTexs").default;
+const Points = require("./Points").default;
 
-export default function() {
+export default function () {
   // ==========
   // Define common variables
   //
   const resolution = new THREE.Vector2();
   const mousemove = new THREE.Vector2();
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     alpha: true,
     antialias: true,
@@ -27,7 +27,7 @@ export default function() {
   //
 
   const texsSrc = {
-    points: '../img/sketch/image_data/elephant.png'
+    points: "../img/sketch/image_data/elephant.png",
   };
   const points = new Points();
 
@@ -56,14 +56,14 @@ export default function() {
   };
   const onMouseMove = (e) => {
     mousemove.set(
-      e.clientX / resolution.x * 2 - 1,
+      (e.clientX / resolution.x) * 2 - 1,
       -(e.clientY / resolution.y) * 2 + 1
     );
   };
   const on = () => {
-    window.addEventListener('resize', debounce(resizeWindow, 1000));
+    window.addEventListener("resize", debounce(resizeWindow, 1000));
 
-    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener("mousemove", onMouseMove);
   };
 
   // ==========
@@ -84,6 +84,6 @@ export default function() {
       resizeWindow();
       renderLoop();
     });
-  }
+  };
   init();
 }

@@ -1,20 +1,20 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Points {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       tex: {
-        type: 't',
-        value: null
+        type: "t",
+        value: null,
       },
       mouse: {
-        type: 'v3',
-        value: new THREE.Vector3()
+        type: "v3",
+        value: new THREE.Vector3(),
       },
     };
     this.obj;
@@ -26,8 +26,8 @@ export default class Points {
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/points.vs').default,
-      fragmentShader: require('./glsl/points.fs').default,
+      vertexShader: require("./glsl/points.vs").default,
+      fragmentShader: require("./glsl/points.fs").default,
       transparent: true,
     });
     this.uniforms.tex.value = tex;

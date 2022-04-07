@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/crystal.vs';
-import fs from './glsl/crystal.fs';
+import vs from "./glsl/crystal.vs";
+import fs from "./glsl/crystal.fs";
 
 export default class Crystal extends THREE.Mesh {
   constructor(geometry) {
@@ -10,24 +10,24 @@ export default class Crystal extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         hsv: {
-          type: 'v3',
-          value: new THREE.Vector3()
+          type: "v3",
+          value: new THREE.Vector3(),
         },
         normalMap: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
         surfaceTex: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
         fogTex: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
       },
       vertexShader: vs,
@@ -36,14 +36,16 @@ export default class Crystal extends THREE.Mesh {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Mesh';
+    this.name = "Mesh";
 
     this.rotation.set(
       MathEx.radians((Math.random() * 2 - 1) * 30),
       0,
       MathEx.radians((Math.random() * 2 - 1) * 30)
     );
-    this.axisBodyRotate = new THREE.Vector3().copy(this.up).applyEuler(this.rotation);
+    this.axisBodyRotate = new THREE.Vector3()
+      .copy(this.up)
+      .applyEuler(this.rotation);
     this.quaternionPrev = new THREE.Quaternion();
   }
   start(hex, normalMap, surfaceTex, fogTex) {
@@ -55,6 +57,8 @@ export default class Crystal extends THREE.Mesh {
   update(time) {
     this.material.uniforms.time.value += time;
     this.quaternionPrev.copy(this.quaternion);
-    this.quaternion.setFromAxisAngle(this.axisBodyRotate, time * 0.1).multiply(this.quaternionPrev);
+    this.quaternion
+      .setFromAxisAngle(this.axisBodyRotate, time * 0.1)
+      .multiply(this.quaternionPrev);
   }
 }

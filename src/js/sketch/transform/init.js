@@ -1,24 +1,24 @@
-const THREE = require('three');
-const debounce = require('js-util/debounce');
+const THREE = require("three");
+import { debounce } from "@ykob/js-util";
 
-const normalizeVector2 = require('../../common/normalizeVector2').default;
-const Butterfly = require('./Butterfly').default;
-const Points = require('./Points').default;
-const Floor = require('./Floor.js').default;
-const PostEffectBright = require('./PostEffectBright.js').default;
-const PostEffectBlur = require('./PostEffectBlur.js').default;
-const PostEffectBloom = require('./PostEffectBloom.js').default;
+const normalizeVector2 = require("../../common/normalizeVector2").default;
+const Butterfly = require("./Butterfly").default;
+const Points = require("./Points").default;
+const Floor = require("./Floor.js").default;
+const PostEffectBright = require("./PostEffectBright.js").default;
+const PostEffectBlur = require("./PostEffectBlur.js").default;
+const PostEffectBloom = require("./PostEffectBloom.js").default;
 
-export default function() {
+export default function () {
   const resolution = {
     x: 0,
-    y: 0
+    y: 0,
   };
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     antialias: true,
     canvas: canvas,
-    alpha: true
+    alpha: true,
   });
   const renderBack1 = new THREE.WebGLRenderTarget(0, 0);
   const renderBack2 = new THREE.WebGLRenderTarget(0, 0);
@@ -47,14 +47,21 @@ export default function() {
   const butterflies = [];
   const points = new Points(BUTTERFLY_NUM * PARTICLE_NUM);
   const floor = new Floor(resolution);
-  const postEffectBright = new PostEffectBright(BRIGHT_MIN, renderBack1.texture);
+  const postEffectBright = new PostEffectBright(
+    BRIGHT_MIN,
+    renderBack1.texture
+  );
   const postEffectBlurX = new PostEffectBlur(renderBack2.texture, 1, 0, 1);
   const postEffectBlurY = new PostEffectBlur(renderBack3.texture, 0, 1, 1);
-  const postEffectBloom = new PostEffectBloom(BRIGHT_MIN, renderBack1.texture, renderBack2.texture);
+  const postEffectBloom = new PostEffectBloom(
+    BRIGHT_MIN,
+    renderBack1.texture,
+    renderBack2.texture
+  );
 
   const texArray = [
-    '/sketch-threejs/img/sketch/transform/tex.png',
-    '/sketch-threejs/img/sketch/transform/flower.jpg'
+    "/sketch-threejs/img/sketch/transform/tex.png",
+    "/sketch-threejs/img/sketch/transform/flower.jpg",
   ];
   const textures = [];
 
@@ -78,7 +85,7 @@ export default function() {
     renderBack2.setSize(resolution.x, resolution.y);
     renderBack3.setSize(resolution.x, resolution.y);
     renderer.setSize(resolution.x, resolution.y);
-  }
+  };
   const render = () => {
     const time = clock.getDelta();
 
@@ -96,17 +103,18 @@ export default function() {
     postEffectBlurX.render(renderer, scene, camera, renderBack3);
     postEffectBlurY.render(renderer, scene, camera, renderBack2);
     postEffectBloom.render(renderer, scene, camera);
-  }
+  };
   const renderLoop = () => {
     render();
     requestAnimationFrame(renderLoop);
-  }
+  };
   const touchStart = (isTouched) => {
     isDrag = true;
     butterflies[0].isTransform = !butterflies[0].isTransform;
   };
   const touchMove = (isTouched) => {
-    if (isDrag) {}
+    if (isDrag) {
+    }
   };
   const touchEnd = (isTouched) => {
     isDrag = false;
@@ -115,49 +123,52 @@ export default function() {
     isDrag = false;
   };
   const on = () => {
-    window.addEventListener('resize', debounce(resizeWindow), 1000);
-    canvas.addEventListener('mousedown', function (event) {
+    window.addEventListener("resize", debounce(resizeWindow), 1000);
+    canvas.addEventListener("mousedown", function (event) {
       event.preventDefault();
       vectorTouchStart.set(event.clientX, event.clientY);
       normalizeVector2(vectorTouchStart);
       touchStart(false);
     });
-    canvas.addEventListener('mousemove', function (event) {
+    canvas.addEventListener("mousemove", function (event) {
       event.preventDefault();
       vectorTouchMove.set(event.clientX, event.clientY);
       normalizeVector2(vectorTouchMove);
       touchMove(false);
     });
-    canvas.addEventListener('mouseup', function (event) {
+    canvas.addEventListener("mouseup", function (event) {
       event.preventDefault();
       vectorTouchEnd.set(event.clientX, event.clientY);
       normalizeVector2(vectorTouchEnd);
       touchEnd(false);
     });
-    canvas.addEventListener('touchstart', function (event) {
+    canvas.addEventListener("touchstart", function (event) {
       event.preventDefault();
       vectorTouchStart.set(event.touches[0].clientX, event.touches[0].clientY);
       normalizeVector2(vectorTouchStart);
       touchStart(event.touches[0].clientX, event.touches[0].clientY, true);
     });
-    canvas.addEventListener('touchmove', function (event) {
+    canvas.addEventListener("touchmove", function (event) {
       event.preventDefault();
       vectorTouchMove.set(event.touches[0].clientX, event.touches[0].clientY);
       normalizeVector2(vectorTouchMove);
       touchMove(true);
     });
-    canvas.addEventListener('touchend', function (event) {
+    canvas.addEventListener("touchend", function (event) {
       event.preventDefault();
-      vectorTouchEnd.set(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+      vectorTouchEnd.set(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY
+      );
       normalizeVector2(vectorTouchEnd);
       touchEnd(true);
     });
-    window.addEventListener('mouseout', function () {
+    window.addEventListener("mouseout", function () {
       event.preventDefault();
       vectorTouchEnd.set(0, 0);
       mouseOut();
     });
-  }
+  };
 
   const init = () => {
     const lookAtY = 60;
@@ -204,6 +215,6 @@ export default function() {
         }
       });
     }
-  }
+  };
   init();
 }

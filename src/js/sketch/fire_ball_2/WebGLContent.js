@@ -1,16 +1,16 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import Camera from './Camera';
-import Core from './Core';
-import CoreLight from './CoreLight';
-import Aura from './Aura';
-import Sparks from './Sparks';
-import Trail from './Trail';
-import Background from './Background';
-import PostEffectBright from './PostEffectBright';
-import PostEffectBlur from './PostEffectBlur';
-import PostEffectBloom from './PostEffectBloom';
+import Camera from "./Camera";
+import Core from "./Core";
+import CoreLight from "./CoreLight";
+import Aura from "./Aura";
+import Sparks from "./Sparks";
+import Trail from "./Trail";
+import Background from "./Background";
+import PostEffectBright from "./PostEffectBright";
+import PostEffectBlur from "./PostEffectBlur";
+import PostEffectBloom from "./PostEffectBloom";
 
 // ==========
 // Define common variables
@@ -19,9 +19,8 @@ let renderer;
 const scene = new THREE.Scene();
 const camera = new Camera();
 const clock = new THREE.Clock({
-  autoStart: false
+  autoStart: false,
 });
-
 
 // For the post effect.
 const renderTarget1 = new THREE.WebGLRenderTarget();
@@ -53,8 +52,7 @@ const postEffectBloom = new PostEffectBloom();
 // Define WebGLContent Class.
 //
 export default class WebGLContent {
-  constructor() {
-  }
+  constructor() {}
   async start(canvas) {
     renderer = new THREE.WebGL1Renderer({
       alpha: true,
@@ -65,9 +63,8 @@ export default class WebGLContent {
     renderer.setClearColor(0x0e0e0e, 1.0);
 
     await Promise.all([
-      texLoader.loadAsync('/sketch-threejs/img/sketch/flow_field/noise.jpg'),
-    ])
-    .then(response => {
+      texLoader.loadAsync("/sketch-threejs/img/sketch/flow_field/noise.jpg"),
+    ]).then((response) => {
       const noiseTex = response[0];
 
       noiseTex.wrapS = THREE.RepeatWrapping;
@@ -82,7 +79,7 @@ export default class WebGLContent {
       sparks.start(noiseTex);
       trail.start(noiseTex);
       background.start(noiseTex);
-    })
+    });
 
     scene.add(core);
     scene.add(coreLight);
@@ -149,14 +146,23 @@ export default class WebGLContent {
     camera.resize(resolution);
     background.resize(camera, resolution);
     renderer.setSize(resolution.x, resolution.y);
-    renderTarget1.setSize(resolution.x * renderer.getPixelRatio(), resolution.y * renderer.getPixelRatio());
-    renderTarget2.setSize(resolution.x * renderer.getPixelRatio(), resolution.y * renderer.getPixelRatio());
-    renderTarget3.setSize(resolution.x * renderer.getPixelRatio(), resolution.y * renderer.getPixelRatio());
+    renderTarget1.setSize(
+      resolution.x * renderer.getPixelRatio(),
+      resolution.y * renderer.getPixelRatio()
+    );
+    renderTarget2.setSize(
+      resolution.x * renderer.getPixelRatio(),
+      resolution.y * renderer.getPixelRatio()
+    );
+    renderTarget3.setSize(
+      resolution.x * renderer.getPixelRatio(),
+      resolution.y * renderer.getPixelRatio()
+    );
     postEffectBlurY.resize(resolution.x / 4, resolution.y / 4);
     postEffectBlurX.resize(resolution.x / 4, resolution.y / 4);
   }
   setCoreAnchor(resolution) {
-    const corePositionZ = (vTouch.y / resolution.y * 2.0 - 1.0) * 70;
+    const corePositionZ = ((vTouch.y / resolution.y) * 2.0 - 1.0) * 70;
     const height = Math.abs(
       (camera.position.z - corePositionZ) *
         Math.tan(MathEx.radians(camera.fov) / 2) *
@@ -174,8 +180,8 @@ export default class WebGLContent {
     if (!e.touches) e.preventDefault();
 
     vTouch.set(
-      (e.touches) ? e.touches[0].clientX : e.clientX,
-      (e.touches) ? e.touches[0].clientY : e.clientY
+      e.touches ? e.touches[0].clientX : e.clientX,
+      e.touches ? e.touches[0].clientY : e.clientY
     );
     isTouched = true;
     this.setCoreAnchor(resolution);
@@ -185,8 +191,8 @@ export default class WebGLContent {
 
     if (isTouched === true) {
       vTouch.set(
-        (e.touches) ? e.touches[0].clientX : e.clientX,
-        (e.touches) ? e.touches[0].clientY : e.clientY
+        e.touches ? e.touches[0].clientX : e.clientX,
+        e.touches ? e.touches[0].clientY : e.clientY
       );
       this.setCoreAnchor(resolution);
     }

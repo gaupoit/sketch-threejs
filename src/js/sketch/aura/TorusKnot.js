@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/TorusKnot.vs';
-import fs from './glsl/TorusKnot.fs';
+import vs from "./glsl/TorusKnot.vs";
+import fs from "./glsl/TorusKnot.fs";
 
 export default class TorusKnot extends THREE.Mesh {
   constructor() {
@@ -13,16 +13,16 @@ export default class TorusKnot extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         alpha: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         renderOutline: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
       vertexShader: vs,
@@ -31,7 +31,7 @@ export default class TorusKnot extends THREE.Mesh {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'TorusKnot';
+    this.name = "TorusKnot";
     this.isActive = false;
   }
   start(alpha) {

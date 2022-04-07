@@ -1,13 +1,13 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class LandmarkPoints {
   constructor() {
     this.positions = undefined;
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -17,13 +17,13 @@ export default class LandmarkPoints {
     const num = 68;
     const geometry = new THREE.BufferGeometry();
     this.positions = new THREE.BufferAttribute(new Float32Array(num * 3), 3);
-    geometry.setAttribute('position', this.positions);
+    geometry.setAttribute("position", this.positions);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/landmarkPoints.vs').default,
-      fragmentShader: require('./glsl/landmarkPoints.fs').default,
+      vertexShader: require("./glsl/landmarkPoints.vs").default,
+      fragmentShader: require("./glsl/landmarkPoints.fs").default,
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
@@ -33,15 +33,15 @@ export default class LandmarkPoints {
     this.obj = new THREE.Points(geometry, material);
   }
   setPositions(landmarks, score, webcam) {
-    const isFacing = (webcam.facingMode === 'user') ? -1 : 1;
+    const isFacing = webcam.facingMode === "user" ? -1 : 1;
 
-    this.obj.visible = (score >= 0.3);
+    this.obj.visible = score >= 0.3;
     if (landmarks === false) return;
     for (var i = 0; i < this.positions.count; i++) {
       this.positions.setXYZ(
         i,
-        (landmarks[i][0] / webcam.resolution.x * 2 - 1) * 25 * isFacing,
-        (landmarks[i][1] / webcam.resolution.y * 2 - 1) * -25,
+        ((landmarks[i][0] / webcam.resolution.x) * 2 - 1) * 25 * isFacing,
+        ((landmarks[i][1] / webcam.resolution.y) * 2 - 1) * -25,
         10
       );
     }

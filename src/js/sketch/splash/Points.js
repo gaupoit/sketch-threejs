@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/Points.vs';
-import fs from './glsl/Points.fs';
+import vs from "./glsl/Points.vs";
+import fs from "./glsl/Points.fs";
 
 const DURATION = 4;
 
@@ -15,16 +15,16 @@ export default class Points extends THREE.Points {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          value: 0
+          value: 0,
         },
         alpha: {
-          value: 0
+          value: 0,
         },
         pixelRatio: {
-          value: window.devicePixelRatio
+          value: window.devicePixelRatio,
         },
         noiseTex: {
-          value: null
+          value: null,
         },
       },
       vertexShader: vs,
@@ -36,13 +36,9 @@ export default class Points extends THREE.Points {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Points';
+    this.name = "Points";
     this.time = 0;
-    this.scale.set(
-      10,
-      10,
-      10
-    );
+    this.scale.set(10, 10, 10);
   }
   start(noiseTex, diff = 0) {
     this.time = diff * -DURATION;

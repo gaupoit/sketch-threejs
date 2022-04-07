@@ -1,16 +1,16 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 
-import Camera from './Camera';
-import Crystal from './Crystal';
-import CrystalSparkle from './CrystalSparkle';
-import Fog from './Fog';
-import Background from './Background';
-import PostEffectBright from './PostEffectBright';
-import PostEffectBlur from './PostEffectBlur';
-import PostEffectBloom from './PostEffectBloom';
+import Camera from "./Camera";
+import Crystal from "./Crystal";
+import CrystalSparkle from "./CrystalSparkle";
+import Fog from "./Fog";
+import Background from "./Background";
+import PostEffectBright from "./PostEffectBright";
+import PostEffectBlur from "./PostEffectBlur";
+import PostEffectBloom from "./PostEffectBloom";
 
 // ==========
 // Define common variables
@@ -19,7 +19,7 @@ let renderer;
 const scene = new THREE.Scene();
 const camera = new Camera();
 const clock = new THREE.Clock({
-  autoStart: false
+  autoStart: false,
 });
 const objLoader = new OBJLoader();
 const texLoader = new THREE.TextureLoader();
@@ -52,8 +52,7 @@ const postEffectBlurY = new PostEffectBlur();
 const postEffectBloom = new PostEffectBloom();
 
 export default class WebGLContent {
-  constructor() {
-  }
+  constructor() {}
   async start(canvas) {
     renderer = new THREE.WebGL1Renderer({
       alpha: true,
@@ -76,34 +75,35 @@ export default class WebGLContent {
     let crystalFogTex;
 
     await Promise.all([
-      objLoader.loadAsync('/sketch-threejs/model/crystal/crystal.obj'),
-      texLoader.loadAsync('/sketch-threejs/img/sketch/crystal/normal.jpg'),
-      texLoader.loadAsync('/sketch-threejs/img/sketch/crystal/surface.jpg'),
-      texLoader.loadAsync('/sketch-threejs/img/sketch/crystal/fog.jpg'),
+      objLoader.loadAsync("/sketch-threejs/model/crystal/crystal.obj"),
+      texLoader.loadAsync("/sketch-threejs/img/sketch/crystal/normal.jpg"),
+      texLoader.loadAsync("/sketch-threejs/img/sketch/crystal/surface.jpg"),
+      texLoader.loadAsync("/sketch-threejs/img/sketch/crystal/fog.jpg"),
     ])
-    .then((response) => {
-      crystalGeometries = response[0].children.map((mesh) => {
-        return mesh.geometry;
+      .then((response) => {
+        crystalGeometries = response[0].children.map((mesh) => {
+          return mesh.geometry;
+        });
+        crystalNormalMap = response[1];
+        crystalSurfaceTex = response[2];
+        crystalFogTex = response[3];
+        crystalFogTex.wrapS = THREE.RepeatWrapping;
+        crystalFogTex.wrapT = THREE.RepeatWrapping;
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      crystalNormalMap = response[1];
-      crystalSurfaceTex = response[2];
-      crystalFogTex = response[3];
-      crystalFogTex.wrapS = THREE.RepeatWrapping;
-      crystalFogTex.wrapT = THREE.RepeatWrapping;
-    })
-    .catch((error) => {
-      console.log(error)
-    });
 
     for (var i = 0; i < CRYSTALS_COUNT; i++) {
-      const radian = MathEx.radians(i / CRYSTALS_COUNT * 360);
+      const radian = MathEx.radians((i / CRYSTALS_COUNT) * 360);
       crystals[i] = new Crystal(crystalGeometries[i % 3]);
-      crystals[i].position.set(
-        Math.cos(radian) * 35,
-        0,
-        Math.sin(radian) * 35
+      crystals[i].position.set(Math.cos(radian) * 35, 0, Math.sin(radian) * 35);
+      crystals[i].start(
+        i / CRYSTALS_COUNT,
+        crystalNormalMap,
+        crystalSurfaceTex,
+        crystalFogTex
       );
-      crystals[i].start(i / CRYSTALS_COUNT, crystalNormalMap, crystalSurfaceTex, crystalFogTex);
       scene.add(crystals[i]);
 
       crystalSparkles[i] = new CrystalSparkle();
@@ -112,13 +112,13 @@ export default class WebGLContent {
       scene.add(crystalSparkles[i]);
     }
     for (var i = 0; i < FOGS_COUNT; i++) {
-      const radian1 = MathEx.radians(i / FOGS_COUNT * 360);
-      const radian2 = MathEx.radians(i / FOGS_COUNT * -360 - 90);
+      const radian1 = MathEx.radians((i / FOGS_COUNT) * 360);
+      const radian2 = MathEx.radians((i / FOGS_COUNT) * -360 - 90);
       const radius = 100;
       fogs[i] = new Fog();
       fogs[i].position.set(
         Math.cos(radian1) * radius,
-        -18 - Math.sin(MathEx.radians(i / FOGS_COUNT * 360 * 8)) * 8,
+        -18 - Math.sin(MathEx.radians((i / FOGS_COUNT) * 360 * 8)) * 8,
         Math.sin(radian1) * radius
       );
       fogs[i].rotation.set(0, radian2, 0);
@@ -157,21 +157,19 @@ export default class WebGLContent {
     }
     bg.update(
       time,
-      Math.atan2(
-        camera.lookVelocity.z,
-        camera.lookVelocity.x
-      ) / MathEx.radians(360)
+      Math.atan2(camera.lookVelocity.z, camera.lookVelocity.x) /
+        MathEx.radians(360)
     );
 
     lookPosition.set(
       Math.cos(MathEx.radians(-dd.anchor.x * 0.6)),
       0,
-      Math.sin(MathEx.radians(-dd.anchor.x * 0.6)),
+      Math.sin(MathEx.radians(-dd.anchor.x * 0.6))
     );
     camera.lookAnchor.copy(
-      lookPosition.clone().add(
-        panPosition.clone().applyQuaternion(camera.quaternion)
-      )
+      lookPosition
+        .clone()
+        .add(panPosition.clone().applyQuaternion(camera.quaternion))
     );
     camera.update();
 
@@ -200,9 +198,18 @@ export default class WebGLContent {
   resize(resolution) {
     camera.resize(resolution);
     renderer.setSize(resolution.x, resolution.y);
-    renderTarget1.setSize(resolution.x * renderer.getPixelRatio(), resolution.y * renderer.getPixelRatio());
-    renderTarget2.setSize(resolution.x * renderer.getPixelRatio(), resolution.y * renderer.getPixelRatio());
-    renderTarget3.setSize(resolution.x * renderer.getPixelRatio(), resolution.y * renderer.getPixelRatio());
+    renderTarget1.setSize(
+      resolution.x * renderer.getPixelRatio(),
+      resolution.y * renderer.getPixelRatio()
+    );
+    renderTarget2.setSize(
+      resolution.x * renderer.getPixelRatio(),
+      resolution.y * renderer.getPixelRatio()
+    );
+    renderTarget3.setSize(
+      resolution.x * renderer.getPixelRatio(),
+      resolution.y * renderer.getPixelRatio()
+    );
     postEffectBlurY.resize(resolution.x / 3, resolution.y / 3);
     postEffectBlurX.resize(resolution.x / 3, resolution.y / 3);
   }

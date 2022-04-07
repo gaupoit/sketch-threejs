@@ -1,16 +1,16 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Pole {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       force: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -25,9 +25,15 @@ export default class Pole {
 
     // Define attributes of the instancing geometry
     const num = 120;
-    const iPositions = new THREE.InstancedBufferAttribute(new Float32Array(num * 3), 3);
-    const iDelays = new THREE.InstancedBufferAttribute(new Float32Array(num), 1);
-    for ( var i = 0, ul = num; i < ul; i++ ) {
+    const iPositions = new THREE.InstancedBufferAttribute(
+      new Float32Array(num * 3),
+      3
+    );
+    const iDelays = new THREE.InstancedBufferAttribute(
+      new Float32Array(num),
+      1
+    );
+    for (var i = 0, ul = num; i < ul; i++) {
       const radius = Math.random() * Math.random() * 40 + 40;
       const radian = MathEx.radians(Math.random() * 360);
       iPositions.setXYZ(
@@ -36,19 +42,16 @@ export default class Pole {
         Math.sin(radian) * radius,
         0
       );
-      iDelays.setX(
-        i,
-        Math.random() * 8
-      )
+      iDelays.setX(i, Math.random() * 8);
     }
-    geometry.setAttribute('iPosition', iPositions);
-    geometry.setAttribute('iDelay', iDelays);
+    geometry.setAttribute("iPosition", iPositions);
+    geometry.setAttribute("iDelay", iDelays);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/pole.vs').default,
-      fragmentShader: require('./glsl/pole.fs').default,
+      vertexShader: require("./glsl/pole.vs").default,
+      fragmentShader: require("./glsl/pole.fs").default,
       transparent: true,
       depthWrite: false,
     });

@@ -1,18 +1,18 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import PhysicsRenderer from './PhysicsRenderer';
+import PhysicsRenderer from "./PhysicsRenderer";
 
-import vs from './glsl/Mover.vs';
-import fs from './glsl/Mover.fs';
-import vsa from './glsl/physicsRendererAcceleration.vs';
-import fsa from './glsl/physicsRendererAcceleration.fs';
-import vsa2 from './glsl/physicsRendererAcceleration2.vs';
-import fsa2 from './glsl/physicsRendererAcceleration2.fs';
-import vsv from './glsl/physicsRendererVelocity.vs';
-import fsv from './glsl/physicsRendererVelocity.fs';
-import vsv2 from './glsl/physicsRendererVelocity2.vs';
-import fsv2 from './glsl/physicsRendererVelocity2.fs';
+import vs from "./glsl/Mover.vs";
+import fs from "./glsl/Mover.fs";
+import vsa from "./glsl/physicsRendererAcceleration.vs";
+import fsa from "./glsl/physicsRendererAcceleration.fs";
+import vsa2 from "./glsl/physicsRendererAcceleration2.vs";
+import fsa2 from "./glsl/physicsRendererAcceleration2.fs";
+import vsv from "./glsl/physicsRendererVelocity.vs";
+import fsv from "./glsl/physicsRendererVelocity.fs";
+import vsv2 from "./glsl/physicsRendererVelocity2.vs";
+import fsv2 from "./glsl/physicsRendererVelocity2.fs";
 
 const HEIGHT_SEGMENTS = 10;
 
@@ -20,7 +20,14 @@ export default class Mover extends THREE.InstancedMesh {
   constructor() {
     // Define Geometry
     const geometry = new THREE.InstancedBufferGeometry();
-    const baseGeometry = new THREE.BoxGeometry(0.25, 0.5, 0.25, 1, HEIGHT_SEGMENTS, 1);
+    const baseGeometry = new THREE.BoxGeometry(
+      0.25,
+      0.5,
+      0.25,
+      1,
+      HEIGHT_SEGMENTS,
+      1
+    );
 
     // Add common attributes
     geometry.copy(baseGeometry);
@@ -32,22 +39,22 @@ export default class Mover extends THREE.InstancedMesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         acceleration: {
-          value: null
+          value: null,
         },
         velocity: {
-          value: null
+          value: null,
         },
         time: {
-          value: 0
-        }
+          value: 0,
+        },
       },
       vertexShader: vs,
-      fragmentShader: fs
+      fragmentShader: fs,
     });
 
     // Create Object3D
     super(geometry, material, count);
-    this.name = 'Mover';
+    this.name = "Mover";
     this.frustumCulled = false;
     this.physicsRenderers = [];
     this.multiTime = new THREE.Vector2(
@@ -65,7 +72,7 @@ export default class Mover extends THREE.InstancedMesh {
     const vFirstArray = [];
     const massArray = [];
 
-    for (var i = 0; i < this.count * 3; i+= 3) {
+    for (var i = 0; i < this.count * 3; i += 3) {
       const radian1 = MathEx.radians(Math.random() * 360);
       const radian2 = MathEx.radians(Math.random() * 360);
       const radius = 5;
@@ -95,68 +102,61 @@ export default class Mover extends THREE.InstancedMesh {
     for (let i = 0; i < HEIGHT_SEGMENTS; i++) {
       if (i === 0) {
         this.physicsRenderers[i] = new PhysicsRenderer(vsa, fsa, vsv, fsv);
-        this.physicsRenderers[i].start(
-          renderer,
-          aArrayBase,
-          vArrayBase
-        );
+        this.physicsRenderers[i].start(renderer, aArrayBase, vArrayBase);
         this.physicsRenderers[i].mergeAUniforms({
           noiseTex: {
-            value: noiseTex
+            value: noiseTex,
           },
           accelerationFirst: {
-            value: this.physicsRenderers[i].createDataTexture(aFirstArray)
+            value: this.physicsRenderers[i].createDataTexture(aFirstArray),
           },
           mass: {
-            value: this.physicsRenderers[i].createDataTexture(massArray)
+            value: this.physicsRenderers[i].createDataTexture(massArray),
           },
           multiTime: {
-            value: this.multiTime
-          }
+            value: this.multiTime,
+          },
         });
         this.physicsRenderers[i].mergeVUniforms({
           velocityFirst: {
-            value: this.physicsRenderers[i].createDataTexture(vFirstArray)
-          }
+            value: this.physicsRenderers[i].createDataTexture(vFirstArray),
+          },
         });
       } else {
         this.physicsRenderers[i] = new PhysicsRenderer(vsa2, fsa2, vsv2, fsv2);
-        this.physicsRenderers[i].start(
-          renderer,
-          null,
-          vArrayBase
-        );
+        this.physicsRenderers[i].start(renderer, null, vArrayBase);
         this.physicsRenderers[i].mergeAUniforms({
           mass: {
-            value: this.physicsRenderers[i].createDataTexture(massArray)
+            value: this.physicsRenderers[i].createDataTexture(massArray),
           },
           prevVelocity: {
-            value: this.physicsRenderers[i - 1].getCurrentVelocity()
+            value: this.physicsRenderers[i - 1].getCurrentVelocity(),
           },
           headVelocity: {
-            value: this.physicsRenderers[0].getCurrentVelocity()
-          }
+            value: this.physicsRenderers[0].getCurrentVelocity(),
+          },
         });
         this.physicsRenderers[i].mergeVUniforms({
           velocityFirst: {
-            value: this.physicsRenderers[i].createDataTexture(vFirstArray)
+            value: this.physicsRenderers[i].createDataTexture(vFirstArray),
           },
           headVelocity: {
-            value: this.physicsRenderers[0].getCurrentVelocity()
-          }
+            value: this.physicsRenderers[0].getCurrentVelocity(),
+          },
         });
         uniforms[`velocity${i}`] = {
-          value: this.physicsRenderers[i].getCurrentVelocity()
+          value: this.physicsRenderers[i].getCurrentVelocity(),
         };
       }
     }
-    uniforms.acceleration.value = this.physicsRenderers[0].getCurrentAcceleration();
+    uniforms.acceleration.value =
+      this.physicsRenderers[0].getCurrentAcceleration();
     uniforms.velocity.value = this.physicsRenderers[0].getCurrentVelocity();
 
     this.geometry.setAttribute(
-      'uvVelocity',
+      "uvVelocity",
       this.physicsRenderers[0].getBufferAttributeUv({
-        instanced: true
+        instanced: true,
       })
     );
   }
@@ -166,9 +166,12 @@ export default class Mover extends THREE.InstancedMesh {
     for (let i = 0; i < this.physicsRenderers.length; i++) {
       const fr = this.physicsRenderers[i];
       if (i !== 0) {
-        fr.aUniforms.prevVelocity.value = this.physicsRenderers[i - 1].getCurrentVelocity()
-        fr.aUniforms.headVelocity.value = this.physicsRenderers[0].getCurrentVelocity()
-        fr.vUniforms.headVelocity.value = this.physicsRenderers[0].getCurrentVelocity()
+        fr.aUniforms.prevVelocity.value =
+          this.physicsRenderers[i - 1].getCurrentVelocity();
+        fr.aUniforms.headVelocity.value =
+          this.physicsRenderers[0].getCurrentVelocity();
+        fr.vUniforms.headVelocity.value =
+          this.physicsRenderers[0].getCurrentVelocity();
       }
       fr.update(renderer, time);
       if (i === 0) {

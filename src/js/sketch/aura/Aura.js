@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/Aura.vs';
-import fs from './glsl/Aura.fs';
+import vs from "./glsl/Aura.vs";
+import fs from "./glsl/Aura.fs";
 
 export default class Aura extends THREE.Mesh {
   constructor() {
@@ -13,20 +13,20 @@ export default class Aura extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         alpha: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         outlineTex: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
         noiseTex: {
-          type: 't',
-          value: null
+          type: "t",
+          value: null,
         },
       },
       vertexShader: vs,
@@ -36,7 +36,7 @@ export default class Aura extends THREE.Mesh {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'Aura';
+    this.name = "Aura";
     this.isActive = false;
   }
   start(alpha, outlineTex, noiseTex) {

@@ -1,10 +1,10 @@
-import * as THREE from 'three';
-import sleep from 'js-util/sleep';
+import * as THREE from "three";
+import { sleep } from "@ykob/js-util";
 
-import Camera from './Camera';
-import Blob from './Blob';
-import Floor from './Floor';
-import DirectionalLight from './DirectionalLight';
+import Camera from "./Camera";
+import Blob from "./Blob";
+import Floor from "./Floor";
+import DirectionalLight from "./DirectionalLight";
 
 // ==========
 // Define common variables
@@ -13,7 +13,7 @@ let renderer;
 const scene = new THREE.Scene();
 const camera = new Camera();
 const clock = new THREE.Clock({
-  autoStart: false
+  autoStart: false,
 });
 
 // ==========
@@ -28,8 +28,7 @@ const dirLight2 = new DirectionalLight();
 // Define WebGLContent Class.
 //
 export default class WebGLContent {
-  constructor() {
-  }
+  constructor() {}
   start(canvas) {
     renderer = new THREE.WebGL1Renderer({
       alpha: true,

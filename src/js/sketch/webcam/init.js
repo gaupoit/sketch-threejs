@@ -1,20 +1,19 @@
-const THREE = require('three');
-const debounce = require('js-util/debounce');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { debounce, MathEx } from "js-util";
 
-const WebCamera = require('./WebCamera').default;
-const Plane = require('./Plane').default;
-const Points = require('./Points').default;
-const Pole = require('./Pole').default;
-const LandmarkPoints = require('./LandmarkPoints').default;
-const BackgroundSphere = require('./BackgroundSphere').default;
+const WebCamera = require("./WebCamera").default;
+const Plane = require("./Plane").default;
+const Points = require("./Points").default;
+const Pole = require("./Pole").default;
+const LandmarkPoints = require("./LandmarkPoints").default;
+const BackgroundSphere = require("./BackgroundSphere").default;
 
-export default async function() {
+export default async function () {
   // ==========
   // Define common variables
   //
   const resolution = new THREE.Vector2();
-  const canvas = document.getElementById('canvas-webgl');
+  const canvas = document.getElementById("canvas-webgl");
   const renderer = new THREE.WebGL1Renderer({
     alpha: true,
     antialias: true,
@@ -23,7 +22,7 @@ export default async function() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera();
   const clock = new THREE.Clock({
-    autoStart: false
+    autoStart: false,
   });
 
   // ==========
@@ -63,7 +62,9 @@ export default async function() {
   const resizeCamera = () => {
     camera.aspect = resolution.x / resolution.y;
     camera.updateProjectionMatrix();
-    camera.setFocalLength(MathEx.step(1, resolution.y / resolution.x) * 15 + 35);
+    camera.setFocalLength(
+      MathEx.step(1, resolution.y / resolution.x) * 15 + 35
+    );
   };
   const resizeWindow = async () => {
     resolution.set(document.body.clientWidth, window.innerHeight);
@@ -74,11 +75,14 @@ export default async function() {
     await webCamera.init();
   };
   const on = () => {
-    window.addEventListener('resize', debounce(() => {
-      resizeWindow().then(() => {
-        plane.resize(webCamera);
-      });
-    }, 500));
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        resizeWindow().then(() => {
+          plane.resize(webCamera);
+        });
+      }, 500)
+    );
   };
 
   // ==========

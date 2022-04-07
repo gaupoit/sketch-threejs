@@ -1,10 +1,10 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import Camera from './Camera';
-import Core from './Core';
-import Mover from './Mover';
-import Background from './Background';
+import Camera from "./Camera";
+import Core from "./Core";
+import Mover from "./Mover";
+import Background from "./Background";
 
 // ==========
 // Define common variables
@@ -13,7 +13,7 @@ let renderer;
 const scene = new THREE.Scene();
 const camera = new Camera();
 const clock = new THREE.Clock({
-  autoStart: false
+  autoStart: false,
 });
 
 // ==========
@@ -30,8 +30,7 @@ let isTouched = false;
 // Define WebGLContent Class.
 //
 export default class WebGLContent {
-  constructor() {
-  }
+  constructor() {}
   async start(canvas) {
     renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -42,9 +41,8 @@ export default class WebGLContent {
     renderer.setClearColor(0x0e0e0e, 1.0);
 
     await Promise.all([
-      texLoader.loadAsync('/sketch-threejs/img/sketch/flow_field/noise.jpg'),
-    ])
-    .then(response => {
+      texLoader.loadAsync("/sketch-threejs/img/sketch/flow_field/noise.jpg"),
+    ]).then((response) => {
       const noiseTex = response[0];
 
       noiseTex.wrapS = THREE.RepeatWrapping;
@@ -56,7 +54,7 @@ export default class WebGLContent {
       core.start(noiseTex);
       mover.start(renderer, noiseTex);
       bg.start(noiseTex);
-    })
+    });
 
     scene.add(core);
     scene.add(mover);
@@ -97,8 +95,8 @@ export default class WebGLContent {
   }
   setCoreAnchor(resolution) {
     const corePositionZ =
-      (vTouch.x / resolution.x * 2.0 - 1.0) * 150 +
-      (vTouch.y / resolution.y * 2.0 - 1.0) * 150;
+      ((vTouch.x / resolution.x) * 2.0 - 1.0) * 150 +
+      ((vTouch.y / resolution.y) * 2.0 - 1.0) * 150;
     const height = Math.abs(
       (camera.position.z - corePositionZ) *
         Math.tan(MathEx.radians(camera.fov) / 2) *
@@ -116,8 +114,8 @@ export default class WebGLContent {
     if (!e.touches) e.preventDefault();
 
     vTouch.set(
-      (e.touches) ? e.touches[0].clientX : e.clientX,
-      (e.touches) ? e.touches[0].clientY : e.clientY
+      e.touches ? e.touches[0].clientX : e.clientX,
+      e.touches ? e.touches[0].clientY : e.clientY
     );
     isTouched = true;
     this.setCoreAnchor(resolution);
@@ -127,8 +125,8 @@ export default class WebGLContent {
 
     if (isTouched === true) {
       vTouch.set(
-        (e.touches) ? e.touches[0].clientX : e.clientX,
-        (e.touches) ? e.touches[0].clientY : e.clientY
+        e.touches ? e.touches[0].clientX : e.clientX,
+        e.touches ? e.touches[0].clientY : e.clientY
       );
       this.setCoreAnchor(resolution);
     }

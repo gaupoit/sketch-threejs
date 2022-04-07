@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
 export default class DnaHelix extends THREE.Points {
   constructor() {
@@ -11,9 +11,15 @@ export default class DnaHelix extends THREE.Points {
     const numLineSpace = 60;
     const numLine = 100;
     const numAmount = numHelix + numLineSpace * numLine;
-    const baPositions = new THREE.BufferAttribute(new Float32Array(numAmount * 3), 3);
+    const baPositions = new THREE.BufferAttribute(
+      new Float32Array(numAmount * 3),
+      3
+    );
     const baRadians = new THREE.BufferAttribute(new Float32Array(numAmount), 1);
-    const baRadiuses = new THREE.BufferAttribute(new Float32Array(numAmount), 1);
+    const baRadiuses = new THREE.BufferAttribute(
+      new Float32Array(numAmount),
+      1
+    );
     const baDelays = new THREE.BufferAttribute(new Float32Array(numAmount), 1);
     for (var i = 0; i < numHelix; i++) {
       const random = Math.random();
@@ -28,12 +34,12 @@ export default class DnaHelix extends THREE.Points {
         diff.y,
         diff.z
       );
-      baRadians.setX(i, MathEx.radians(i / numHelix * 900 + i % 2 * 180));
+      baRadians.setX(i, MathEx.radians((i / numHelix) * 900 + (i % 2) * 180));
       baRadiuses.setX(i, 18);
       baDelays.setX(i, MathEx.radians(Math.random() * 360));
     }
     for (var j = 0; j < numLineSpace; j++) {
-      const radians = MathEx.radians(j / numLineSpace * 900);
+      const radians = MathEx.radians((j / numLineSpace) * 900);
       for (var k = 0; k < numLine; k++) {
         const index = j * numLine + k + numHelix;
         const random = Math.random();
@@ -49,25 +55,25 @@ export default class DnaHelix extends THREE.Points {
           diff.z
         );
         baRadians.setX(index, radians);
-        baRadiuses.setX(index, (k / numLine * 2 - 1) * 18);
+        baRadiuses.setX(index, ((k / numLine) * 2 - 1) * 18);
         baDelays.setX(index, MathEx.radians(Math.random() * 360));
       }
     }
-    geometry.setAttribute('position', baPositions);
-    geometry.setAttribute('radian', baRadians);
-    geometry.setAttribute('radius', baRadiuses);
-    geometry.setAttribute('delay', baDelays);
+    geometry.setAttribute("position", baPositions);
+    geometry.setAttribute("radian", baRadians);
+    geometry.setAttribute("radius", baRadiuses);
+    geometry.setAttribute("delay", baDelays);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
-      vertexShader: require('./glsl/DnaHelix.vs').default,
-      fragmentShader: require('./glsl/DnaHelix.fs').default,
+      vertexShader: require("./glsl/DnaHelix.vs").default,
+      fragmentShader: require("./glsl/DnaHelix.fs").default,
       transparent: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
@@ -75,7 +81,7 @@ export default class DnaHelix extends THREE.Points {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'DNA Herix';
+    this.name = "DNA Herix";
   }
   render(time) {
     this.material.uniforms.time.value += time;

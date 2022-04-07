@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/debris.vs';
-import fs from './glsl/debris.fs';
+import vs from "./glsl/debris.vs";
+import fs from "./glsl/debris.fs";
 
 export default class Debris extends THREE.InstancedMesh {
   constructor() {
@@ -15,22 +15,25 @@ export default class Debris extends THREE.InstancedMesh {
 
     // Define attributes of the instancing geometry
     const num = 30;
-    const ibaPositions = new THREE.InstancedBufferAttribute(new Float32Array(num * 3), 3);
+    const ibaPositions = new THREE.InstancedBufferAttribute(
+      new Float32Array(num * 3),
+      3
+    );
     const ibaIds = new THREE.InstancedBufferAttribute(new Float32Array(num), 1);
     const p = new THREE.Vector3();
     for (var i = 0, ul = num; i < ul; i++) {
       ibaPositions.setXYZ(i, i * 3 + 15, 0, 0);
       ibaIds.setXYZ(i, i);
     }
-    geometry.setAttribute('iPosition', ibaPositions);
-    geometry.setAttribute('iIds', ibaIds);
+    geometry.setAttribute("iPosition", ibaPositions);
+    geometry.setAttribute("iIds", ibaIds);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
       vertexShader: vs,
@@ -40,10 +43,9 @@ export default class Debris extends THREE.InstancedMesh {
     // Create Object3D
     super(geometry, material, num);
     this.rotation.set(0, MathEx.radians(40), MathEx.radians(30));
-    this.name = 'Debris';
+    this.name = "Debris";
   }
-  start() {
-  }
+  start() {}
   update(time) {
     this.material.uniforms.time.value += time;
   }

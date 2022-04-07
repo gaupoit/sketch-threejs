@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
 export default class BoarHead extends THREE.Mesh {
   constructor(geometry) {
@@ -7,20 +7,20 @@ export default class BoarHead extends THREE.Mesh {
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: -2
+          type: "f",
+          value: -2,
         },
         drawBrightOnly: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
         dissolveEdge: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
-      vertexShader: require('./glsl/boarHead.vs').default,
-      fragmentShader: require('./glsl/boarHead.fs').default,
+      vertexShader: require("./glsl/boarHead.vs").default,
+      fragmentShader: require("./glsl/boarHead.fs").default,
       transparent: true,
     });
 

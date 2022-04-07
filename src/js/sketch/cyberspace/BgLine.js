@@ -1,28 +1,28 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class BgLine {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       wave1: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       wave2: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       wave3: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       wave4: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -34,8 +34,8 @@ export default class BgLine {
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/bgLine.vs').default,
-      fragmentShader: require('./glsl/bgLine.fs').default,
+      vertexShader: require("./glsl/bgLine.vs").default,
+      fragmentShader: require("./glsl/bgLine.fs").default,
       transparent: true,
       depthWrite: false,
       side: THREE.BackSide,

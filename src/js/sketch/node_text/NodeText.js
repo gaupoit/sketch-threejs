@@ -1,29 +1,29 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class Node {
   constructor() {
     this.durationTransform = 0.8;
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
       timeTransform: {
-        type: 'f',
-        value: this.durationTransform
+        type: "f",
+        value: this.durationTransform,
       },
       durationTransform: {
-        type: 'f',
-        value: this.durationTransform
+        type: "f",
+        value: this.durationTransform,
       },
       prevIndex: {
-        type: 'f',
-        value: 1
+        type: "f",
+        value: 1,
       },
       nextIndex: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.isTransform = false;
@@ -40,8 +40,8 @@ export default class Node {
       curveSegments: 1,
     };
     const baseGeometries = [
-      new THREE.TextGeometry('HELLO', optTextGeometry),
-      new THREE.TextGeometry('WORLD', optTextGeometry),
+      new THREE.TextGeometry("HELLO", optTextGeometry),
+      new THREE.TextGeometry("WORLD", optTextGeometry),
     ];
     const geometry = new THREE.BufferGeometry();
     let maxCount = 0;
@@ -54,7 +54,7 @@ export default class Node {
       }
     });
     baseGeometries.map((g, i) => {
-      const index = (i > 0) ? i + 1 : '';
+      const index = i > 0 ? i + 1 : "";
       if (g.attributes.position.count < maxCount) {
         const basePosition = g.attributes.position.array;
         const position = [];
@@ -65,7 +65,10 @@ export default class Node {
             position[j + 1] = (Math.random() * 2 - 1) * 250;
             position[j + 2] = (Math.random() * 2 - 1) * 250;
             opacity[j / 3] = 0;
-          } else if (j >= basePosition.length + (maxCount * 3 - basePosition.length) / 2) {
+          } else if (
+            j >=
+            basePosition.length + (maxCount * 3 - basePosition.length) / 2
+          ) {
             position[j] = (Math.random() * 2 - 1) * 700;
             position[j + 1] = (Math.random() * 2 - 1) * 250;
             position[j + 2] = (Math.random() * 2 - 1) * 250;
@@ -78,16 +81,25 @@ export default class Node {
             opacity[j / 3] = 1;
           }
         }
-        geometry.setAttribute(`position${index}`, new THREE.Float32BufferAttribute(position, 3, 1));
-        geometry.setAttribute(`opacity${index}`, new THREE.Float32BufferAttribute(opacity, 1, 1));
+        geometry.setAttribute(
+          `position${index}`,
+          new THREE.Float32BufferAttribute(position, 3, 1)
+        );
+        geometry.setAttribute(
+          `opacity${index}`,
+          new THREE.Float32BufferAttribute(opacity, 1, 1)
+        );
       } else {
         const opacity = [];
-        for (var j = 0; j < maxCount ; j++) {
+        for (var j = 0; j < maxCount; j++) {
           opacity[j] = 1;
         }
         geometry.setAttribute(`position${index}`, g.attributes.position);
-        geometry.setAttribute(`opacity${index}`, new THREE.Float32BufferAttribute(opacity, 1, 1));
-        geometry.setAttribute('normal', g.attributes.normal);
+        geometry.setAttribute(
+          `opacity${index}`,
+          new THREE.Float32BufferAttribute(opacity, 1, 1)
+        );
+        geometry.setAttribute("normal", g.attributes.normal);
         geometry.setAttribute(`uv`, g.attributes.uv);
         geometry.setIndex(g.index);
       }
@@ -96,23 +108,23 @@ export default class Node {
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/nodeText.vs').default,
-      fragmentShader: require('./glsl/nodeText.fs').default,
+      vertexShader: require("./glsl/nodeText.vs").default,
+      fragmentShader: require("./glsl/nodeText.fs").default,
       depthWrite: false,
       transparent: true,
     });
     const materialWire = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/nodeText.vs').default,
-      fragmentShader: require('./glsl/nodeTextWire.fs').default,
+      vertexShader: require("./glsl/nodeText.vs").default,
+      fragmentShader: require("./glsl/nodeTextWire.fs").default,
       depthWrite: false,
       transparent: true,
       wireframe: true,
     });
     const materialPoints = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/nodeTextPoints.vs').default,
-      fragmentShader: require('./glsl/nodeTextPoints.fs').default,
+      vertexShader: require("./glsl/nodeTextPoints.vs").default,
+      fragmentShader: require("./glsl/nodeTextPoints.fs").default,
       depthWrite: false,
       transparent: true,
     });
@@ -126,8 +138,14 @@ export default class Node {
     const max = 1;
     this.isTransform = true;
     this.uniforms.timeTransform.value = 0;
-    this.uniforms.prevIndex.value = (this.uniforms.prevIndex.value < max) ? this.uniforms.prevIndex.value + 1 : 0;
-    this.uniforms.nextIndex.value = (this.uniforms.nextIndex.value < max) ? this.uniforms.nextIndex.value + 1 : 0;
+    this.uniforms.prevIndex.value =
+      this.uniforms.prevIndex.value < max
+        ? this.uniforms.prevIndex.value + 1
+        : 0;
+    this.uniforms.nextIndex.value =
+      this.uniforms.nextIndex.value < max
+        ? this.uniforms.nextIndex.value + 1
+        : 0;
   }
   render(time) {
     this.uniforms.time.value += time;

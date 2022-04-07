@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import MathEx from 'js-util/MathEx';
+import * as THREE from "three";
+import { MathEx } from "@ykob/js-util";
 
-import vs from './glsl/NodePoints.vs';
-import fs from './glsl/NodePoints.fs';
+import vs from "./glsl/NodePoints.vs";
+import fs from "./glsl/NodePoints.fs";
 
 const NUM = 100;
 const R = new THREE.Vector2();
@@ -11,11 +11,9 @@ const A = new THREE.Vector3();
 
 const getViewSize = (camera) => {
   const fovInRadians = (camera.fov * Math.PI) / 180;
-  const height = Math.abs(
-    camera.position.z * Math.tan(fovInRadians / 2) * 2
-  );
+  const height = Math.abs(camera.position.z * Math.tan(fovInRadians / 2) * 2);
   R.set(height * camera.aspect, height);
-}
+};
 
 export default class NodePoints extends THREE.Points {
   constructor(camera) {
@@ -23,7 +21,10 @@ export default class NodePoints extends THREE.Points {
     const geometry = new THREE.BufferGeometry();
 
     const baPositions = new THREE.BufferAttribute(new Float32Array(NUM * 3), 3);
-    const baAcceralations = new THREE.BufferAttribute(new Float32Array(NUM * 3), 3);
+    const baAcceralations = new THREE.BufferAttribute(
+      new Float32Array(NUM * 3),
+      3
+    );
     const baSizes = new THREE.BufferAttribute(new Float32Array(NUM), 1);
 
     getViewSize(camera);
@@ -46,16 +47,16 @@ export default class NodePoints extends THREE.Points {
       baSizes.setX(i, size);
     }
 
-    geometry.setAttribute('position', baPositions);
-    geometry.setAttribute('acceralation', baAcceralations);
-    geometry.setAttribute('size', baSizes);
+    geometry.setAttribute("position", baPositions);
+    geometry.setAttribute("acceralation", baAcceralations);
+    geometry.setAttribute("size", baSizes);
 
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: {
         time: {
-          type: 'f',
-          value: 0
+          type: "f",
+          value: 0,
         },
       },
       vertexShader: vs,
@@ -66,11 +67,9 @@ export default class NodePoints extends THREE.Points {
 
     // Create Object3D
     super(geometry, material);
-    this.name = 'NodePoints';
+    this.name = "NodePoints";
   }
-  start() {
-
-  }
+  start() {}
   update(time, camera) {
     getViewSize(camera);
 

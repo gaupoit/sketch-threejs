@@ -1,12 +1,12 @@
-const THREE = require('three');
-const MathEx = require('js-util/MathEx');
+const THREE = require("three");
+import { MathEx } from "@ykob/js-util";
 
 export default class FlameCore {
   constructor() {
     this.uniforms = {
       time: {
-        type: 'f',
-        value: 0
+        type: "f",
+        value: 0,
       },
     };
     this.obj;
@@ -18,8 +18,8 @@ export default class FlameCore {
     // Define Material
     const material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: require('./glsl/flameCore.vs').default,
-      fragmentShader: require('./glsl/flameCore.fs').default,
+      vertexShader: require("./glsl/flameCore.vs").default,
+      fragmentShader: require("./glsl/flameCore.fs").default,
     });
 
     // Create Object3D
