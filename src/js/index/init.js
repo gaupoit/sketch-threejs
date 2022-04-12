@@ -26,7 +26,7 @@ export default function () {
   const sceneBack = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   const cameraBack = new THREE.PerspectiveCamera(
-    45,
+    50,
     document.body.clientWidth / window.innerHeight,
     1,
     10000
