@@ -1,6 +1,6 @@
-const Force3 = require('../../common/Force3').default;
-const Core = require('./Core').default;
-const Wire = require('./Wire').default;
+const Force3 = require("../../common/Force3").default;
+const Core = require("./Core").default;
+const Wire = require("./Wire").default;
 
 export default class Boxes {
   constructor() {
@@ -26,9 +26,9 @@ export default class Boxes {
     this.core.uniforms.pickedId.value = id;
     this.wire.uniforms.pickedId.value = id;
     if (id < this.instances && id > -1) {
-      document.body.classList.add('is-picked');
+      document.body.classList.add("is-picked");
     } else {
-      document.body.classList.remove('is-picked');
+      document.body.classList.remove("is-picked");
     }
   }
   render(time) {
