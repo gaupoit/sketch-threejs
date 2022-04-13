@@ -24,6 +24,14 @@ html(lang="ja")
               )
             span.c-button__label
               +splitStr('back', 'js-split-str')
+      - if (page.id === 'index')
+        .p-utility-menu
+          a.c-button(
+            href = "https://docs.plantverse.app/whitepaper/",
+            class = (page.color == "white") ? 'c-button--white' : 'c-button--black',
+            )
+            span.c-button__label
+              +splitStr('Whitepaper', 'js-split-str')
     block scripts
     script(src="/sketch-threejs/js/main.js")
     script.
