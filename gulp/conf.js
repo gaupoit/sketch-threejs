@@ -1,12 +1,12 @@
 // 設定ファイル
 // 対象パスやオプションを指定
 
-const DIR = module.exports.DIR =  {
-  PATH: '/sketch-threejs',
-  SRC: 'src',
-  DEST: 'dst',
-  BUILD: 'docs'
-};
+const DIR = (module.exports.DIR = {
+  PATH: "/sketch-threejs",
+  SRC: "src",
+  DEST: "dst",
+  BUILD: "docs",
+});
 const WEBPACK_CONFIG = {
   NODE_ENV: JSON.stringify(process.env.NODE_ENV),
 };
@@ -19,12 +19,12 @@ module.exports.serve = {
     ghostMode: false,
     server: {
       baseDir: DIR.DEST,
-      index: 'index.html',
+      index: "index.html",
       routes: {
-        [DIR.PATH]: `${DIR.DEST}/`
-      }
+        [DIR.PATH]: `${DIR.DEST}/`,
+      },
     },
-    https: true,
+    https: false,
   },
   build: {
     //tunnel: 'test',
@@ -33,16 +33,16 @@ module.exports.serve = {
     ghostMode: false,
     server: {
       baseDir: DIR.BUILD,
-      index: 'index.html',
+      index: "index.html",
       routes: {
-        [DIR.PATH]: `${DIR.BUILD}/`
-      }
+        [DIR.PATH]: `${DIR.BUILD}/`,
+      },
     },
     https: true,
-  }
+  },
 };
 
-const { DefinePlugin } = require('webpack');
+const { DefinePlugin } = require("webpack");
 module.exports.scripts = {
   src: [
     `./${DIR.SRC}/**/*.js`,
@@ -59,7 +59,7 @@ module.exports.scripts = {
       main: `./${DIR.SRC}/js/main.js`,
     },
     output: {
-      filename: `[name].js`
+      filename: `[name].js`,
     },
     module: {
       rules: [
@@ -67,90 +67,84 @@ module.exports.scripts = {
           test: /\.js$/,
           exclude: /node_modules/,
           use: {
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
-              presets: ['@babel/preset-env']
-            }
+              presets: ["@babel/preset-env"],
+            },
           },
         },
         {
           test: /\.(glsl|fs|vs)$/,
           exclude: /node_modules/,
           use: {
-            loader: 'glslify-import-loader',
-          }
+            loader: "glslify-import-loader",
+          },
         },
         {
           test: /\.(glsl|fs|vs)$/,
           exclude: /node_modules/,
           use: {
-            loader: 'raw-loader',
-          }
+            loader: "raw-loader",
+          },
         },
         {
           test: /\.(glsl|fs|vs)$/,
           exclude: /node_modules/,
           use: {
-            loader: 'glslify-loader',
-          }
-        }
-      ]
+            loader: "glslify-loader",
+          },
+        },
+      ],
     },
-    plugins: [
-      new DefinePlugin(WEBPACK_CONFIG),
-    ],
-  }
+    plugins: [new DefinePlugin(WEBPACK_CONFIG)],
+  },
 };
 
 module.exports.pug = {
   src: [
     `${DIR.SRC}/**/*.pug`,
     `!${DIR.SRC}/**/_**/*.pug`,
-    `!${DIR.SRC}/**/_*.pug`
+    `!${DIR.SRC}/**/_*.pug`,
   ],
   dest: `${DIR.DEST}`,
   json: `${DIR.SRC}/data.json`,
   opts: {
-    pretty: true
-  }
+    pretty: true,
+  },
 };
 
 module.exports.sass = {
   src: [
     `${DIR.SRC}/**/*.{sass,scss}`,
     `!${DIR.SRC}/**/_**/*.{sass,scss}`,
-    `!${DIR.SRC}/**/_*.{sass,scss}`
+    `!${DIR.SRC}/**/_*.{sass,scss}`,
   ],
   dest: `${DIR.DEST}/css`,
 };
 
 module.exports.replace = {
   html: {
-    src: [
-      `${DIR.DEST}/**/*.html`
-    ],
+    src: [`${DIR.DEST}/**/*.html`],
     dest: `${DIR.BUILD}`,
-    path: `${DIR.PATH}`
-  }
+    path: `${DIR.PATH}`,
+  },
 };
 
 module.exports.sprite = {
-  src: [
-    `${DIR.SRC}/img/sprite/**/*.png`
-  ],
+  src: [`${DIR.SRC}/img/sprite/**/*.png`],
   dest: {
     img: `${DIR.DEST}/img/common`,
-    css: `${DIR.SRC}/css/foundation`
+    css: `${DIR.SRC}/css/foundation`,
   },
   opts: {
-    imgName: 'sprite.png',
-    cssName: '_sprite.scss',
-    imgPath: '../img/common/sprite.png',
+    imgName: "sprite.png",
+    cssName: "_sprite.scss",
+    imgPath: "../img/common/sprite.png",
     padding: 10,
     cssOpts: {
-      functions: false
-    }
-  }
+      functions: false,
+    },
+  },
 };
 
 module.exports.cleanCss = {
@@ -159,13 +153,9 @@ module.exports.cleanCss = {
 };
 
 module.exports.uglify = {
-  src: [
-    `./${DIR.DEST}/js/vendor.js`,
-    `./${DIR.DEST}/js/main.js`,
-  ],
+  src: [`./${DIR.DEST}/js/vendor.js`, `./${DIR.DEST}/js/main.js`],
   dest: `${DIR.BUILD}/js`,
-  opts: {
-  }
+  opts: {},
 };
 
 module.exports.copy = {
@@ -178,8 +168,8 @@ module.exports.copy = {
     ],
     dest: `${DIR.DEST}`,
     opts: {
-      base: `${DIR.SRC}`
-    }
+      base: `${DIR.SRC}`,
+    },
   },
   build: {
     src: [
@@ -190,9 +180,9 @@ module.exports.copy = {
     ],
     dest: `${DIR.BUILD}`,
     opts: {
-      base: `${DIR.DEST}`
-    }
-  }
+      base: `${DIR.DEST}`,
+    },
+  },
 };
 
 module.exports.imagemin = {
@@ -211,19 +201,16 @@ module.exports.imagemin = {
       progressive: true,
     },
     svgo: {
-      plugins: [
-        { removeViewBox: false },
-        { cleanupIDs: true },
-      ]
+      plugins: [{ removeViewBox: false }, { cleanupIDs: true }],
     },
-  }
+  },
 };
 
 module.exports.clean = {
   dest: {
-    path: [`${DIR.DEST}`]
+    path: [`${DIR.DEST}`],
   },
   build: {
-    path: [`${DIR.BUILD}`]
-  }
+    path: [`${DIR.BUILD}`],
+  },
 };
