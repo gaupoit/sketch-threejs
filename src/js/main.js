@@ -8,7 +8,6 @@ const pageId = page.dataset.id;
 // running each init functions.
 if (pageId == "index") {
   require("./index/init.js").default();
-  require("./sketch/reel/init.js").default();
 } else {
   const canvas = document.getElementById("canvas-webgl");
   canvas.addEventListener("contextmenu", function (event) {
