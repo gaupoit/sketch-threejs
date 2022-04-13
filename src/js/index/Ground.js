@@ -22,7 +22,6 @@ export default class Ground {
         vertexShader: require("./glsl/ground.vs").default,
         fragmentShader: require("./glsl/ground.fs").default,
         transparent: true,
-        wireframe: true,
       })
     );
   }
