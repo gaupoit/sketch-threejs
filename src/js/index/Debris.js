@@ -23,7 +23,7 @@ export default class Debris {
         vertexShader: require("./glsl/debris.vs").default,
         fragmentShader: require("./glsl/debris.fs").default,
         transparent: true,
-        wireframe: true,
+        // wireframe: true,
       })
     );
   }

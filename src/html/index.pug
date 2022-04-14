@@ -26,31 +26,109 @@ block content
           .p-introduction__follow-in.p-introduction__follow-in--3
 
     .p-sketch-index
-      h1 Roadmap
-    
-    .p-sketch-index 
-      h1 Team
+      h1 How MetaBIO works
+      canvas(id="reel-canvas-webgl", class="p-canvas-webgl")
 
     .p-sketch-index
-      - var count = 0;
-      each item in data.pages
-        if (item.title !== '' && item.title !== 'shadow')
-          .p-sketch-index__item(
+      h1 Roadmap
+
+    .p-sketch-index
+      #timeline-content
+        ul.timeline
+          li.event(data-date='Q2/2022')
+            h3 Plant to Earn Born
+            p  &#x1F4E3; &quot;Publish Whitepaper&quot;
+          li.event(data-date='Q3/2022')
+            h3 NFT Real Plant
+            p &#9935; Mint NFT from plant profile
+            p &#127967; Hall of Fame to display rare NFT
+            p &#127974; NFT Marketplace
+          li#date.event(data-date='Q4/2022')
+            h3 MetaFi features
+            p &#128176; Rewards System
+            p &#128668; Farming / Staking
+            p &#129400; PlantDAO
+            p &#x1F4E3; &quot;Ready for testnet!&quot; 
+          li.event(data-date='Q1/2023')
+            h3 IEO / IDO
+            p &#x1F4E3; &quot;Ready for mainnet!&quot;  
+
+    .p-sketch-index
+      h1 Team
+    .p-sketch-index 
+      .p-sketch-index__item(
             class = 'js-smooth-item js-scroll-item',
           )
-            a(href = `/sketch-threejs${item.path}`).p-sketch-index__item-wrap
+        a(href = `/#`).p-sketch-index__item-wrap 
               .p-sketch-index__item-thumb(
-                style = `background-image: url(/sketch-threejs/img/common/ogp_${item.id}.jpg)`
+                style = `background-image: url(/sketch-threejs/img/avatar/ceo.png)`
               )
-                .p-sketch-index__item-thumb-label
-                  +splitStr('show this', 'js-split-str')
+               .p-sketch-index__item-thumb-label
+                  +splitStr('See more', 'js-split-str')
               .p-sketch-index__item-title
-                +splitStr(item.title, 'js-split-str')
+                +splitStr("Harry Le", 'js-split-str')
               .p-sketch-index__item-date
-                |posted: #{item.posted} 
-                if (item.update)
-                  |/ update: #{item.update}
-          - count++;
+                |Co-Founder/CEO
+      .p-sketch-index__item(
+            class = 'js-smooth-item js-scroll-item',
+          )
+        a(href = `/#`).p-sketch-index__item-wrap 
+              .p-sketch-index__item-thumb(
+                style = `background-image: url(/sketch-threejs/img/avatar/cpo.png)`
+              )
+               .p-sketch-index__item-thumb-label
+                  +splitStr('See more', 'js-split-str')
+              .p-sketch-index__item-title
+                +splitStr("Hung Nguyen", 'js-split-str')
+              .p-sketch-index__item-date
+                |Co-Founder/CPO
+      .p-sketch-index__item(
+            class = 'js-smooth-item js-scroll-item',
+          )
+        a(href = `/#`).p-sketch-index__item-wrap 
+              .p-sketch-index__item-thumb(
+                style = `background-image: url(/sketch-threejs/img/avatar/cto.png)`
+              )
+               .p-sketch-index__item-thumb-label
+                  +splitStr('See more', 'js-split-str')
+              .p-sketch-index__item-title
+                +splitStr("Thinh Nguyen", 'js-split-str')
+              .p-sketch-index__item-date
+                |Co-Founder/CTO
+      .p-sketch-index__item(
+            class = 'js-smooth-item js-scroll-item',
+          )
+        a(href = `/#`).p-sketch-index__item-wrap 
+              .p-sketch-index__item-thumb(
+                style = `background-image: url(/sketch-threejs/img/avatar/sa.png)`
+              )
+               .p-sketch-index__item-thumb-label
+                  +splitStr('See more', 'js-split-str')
+              .p-sketch-index__item-title
+                +splitStr("Viet Doan", 'js-split-str')
+              .p-sketch-index__item-date
+                |Solution Architecture
+
+    //- .p-sketch-index
+    //-   - var count = 0;
+    //-   each item in data.pages
+    //-     if (item.title !== '' && item.title !== 'shadow')
+    //-       .p-sketch-index__item(
+    //-         class = 'js-smooth-item js-scroll-item',
+    //-       )
+    //-         a(href = `/sketch-threejs${item.path}`).p-sketch-index__item-wrap
+    //-           .p-sketch-index__item-thumb(
+    //-             style = `background-image: url(/sketch-threejs/img/common/ogp_${item.id}.jpg)`
+    //-           )
+    //-             .p-sketch-index__item-thumb-label
+    //-               +splitStr('show this', 'js-split-str')
+    //-           .p-sketch-index__item-title
+    //-             +splitStr(item.title, 'js-split-str')
+    //-           .p-sketch-index__item-date
+    //-             |posted: #{item.posted} 
+    //-             if (item.update)
+    //-               |/ update: #{item.update}
+    //-       - count++;
           
   .p-dummy-scroll.js-dummy-scroll
 
